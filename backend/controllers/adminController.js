@@ -1,0 +1,254 @@
+const {
+  createNewTask,
+  getAllTasks,
+  deleteTaskData,
+  getTaskbyid,
+  updateTaskData,
+} = require("../models/Task");
+const {
+  getAllUsers,
+  getUserbyid,
+  updateUserData,
+  deleteUserData,
+  findUserByIdAndRole,
+  findUserById,
+} = require("../models/User");
+const { createNewMeeting } = require("../models/Meeting");
+
+const getUsers = async (req, res) => {
+  try {
+    const users = await getAllUsers();
+    res.json(users);
+    console.log("usuarios obtenidos correctamente");
+  } catch (error) {
+    console.log("Error al obtener los usuarios", error);
+    res.status(500).json({ error: "Error al obtener usuarios" });
+  }
+};
+
+const loadTasks = async (req, res) => {
+  try {
+    const tasks = await getAllTasks(); // Obtiene las tareas
+    res.json(tasks); // Devuelve las tareas en formato JSON
+    console.log("Tareas obtenidas correctamente");
+  } catch (error) {
+    console.log("Error al obtener las tareas", error);
+    res.status(500).json({ error: "Error al obtener tareas" });
+  }
+};
+
+const getUserById = async (req, res) => {
+  const { id } = req.query;
+  try {
+    const user = await getUserbyid(id);
+    if (!user) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+    res.json(user);
+    console.log("Usuario obtenido correctamente");
+  } catch (error) {
+    console.error("Error al obtener el usuario", error);
+    res.status(500).json({ error: "Error al obtener usuario" });
+  }
+};
+
+const getTaskById = async (req, res) => {
+  const { id } = req.query;
+  try {
+    const task = await getTaskbyid(id);
+    if (!task) {
+      return res.status(404).json({ error: "Tarea no encontrado" });
+    }
+    res.json(task);
+    console.log("Tarea obtenida correctamente");
+  } catch (error) {
+    console.error("Error al obtener la tarea", error);
+    res.status(500).json({ error: "Error al obtener la tarea" });
+  }
+};
+
+const updateUser = async (req, res) => {
+  const { id } = req.query;
+  const { nombre, apellido, correo_electronico, estado, rol } = req.body;
+
+  try {
+    const updatedUser = await updateUserData(id, {
+      nombre,
+      apellido,
+      correo_electronico,
+      estado,
+      rol,
+    });
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+    res.json({ message: "Usuario actualizado correctamente", updatedUser });
+  } catch (error) {
+    console.error("Error al actualizar el usuario:", error);
+    res.status(500).json({ error: "Error al actualizar usuario" });
+  }
+};
+
+const updateTask = async (req, res) => {
+  const { id } = req.query;
+  const { descripcion, fecha_vencimiento, estado, id_usuario } = req.body;
+
+  try {
+    const updatedTask = await updateTaskData(id, {
+      descripcion,
+      fecha_vencimiento,
+      estado,
+      id_usuario,
+    });
+
+    if (!updateTask) {
+      return res.status(404).json({ error: "Tarea no encontrado" });
+    }
+    res.json({ message: "Tarea actualizada correctamente", updateUser });
+  } catch (error) {
+    console.error("Error al actualizar la Tarea:", error);
+    res.status(500).json({ error: "Error al actualizar la Tarea" });
+  }
+};
+
+const deleteUser = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await deleteUserData(id);
+    if (result === null) {
+      return res.status(404).json({ message: "Usuario no encontrado." });
+    }
+    return res.json(result);
+  } catch (error) {
+    console.error("Error al eliminar el usuario:", error);
+    return res
+      .status(500)
+      .json({ message: "Error interno al eliminar el usuario." });
+  }
+};
+
+const deleteTask = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await deleteTaskData(id);
+    if (result === null) {
+      return res.status(404).json({ message: "Tarea no encontrada." });
+    }
+    return res.json(result);
+  } catch (error) {
+    console.error("Error al eliminar la Tarea:", error);
+    return res
+      .status(500)
+      .json({ message: "Error interno al eliminar la tarea." });
+  }
+};
+
+const addTask = async (req, res) => {
+  console.log("Si entro en el controlador");
+
+  // Recibe el objeto tarea directamente desde el cuerpo de la solicitud
+  const tarea = req.body;
+  const { rolSeleccionado, id_usuario } = tarea; // Extraemos rol y id_usuario del objeto tarea
+  console.log(
+    "el rol es: ",
+    rolSeleccionado,
+    "el id del usuario es: ",
+    id_usuario
+  );
+
+  // Verificamos si los datos de rol y id_usuario están presentes
+  if (!rolSeleccionado || !id_usuario) {
+    return res
+      .status(400)
+      .json({ message: "Faltan datos de rol o id_usuario." });
+  }
+
+  try {
+    // Buscar el usuario por id y rol
+    const usuario = await findUserByIdAndRole(id_usuario, rolSeleccionado); // Usa rolSeleccionado aquí
+    if (!usuario) {
+      return res
+        .status(404)
+        .json({ message: "Usuario no encontrado o no tiene el rol adecuado." });
+    }
+
+    // Crear la nueva tarea
+    const result = await createNewTask(tarea);
+    if (!result) {
+      return res.status(500).json({ message: "Error al crear la tarea." });
+    }
+
+    // Retornamos la tarea creada
+    return res
+      .status(201)
+      .json({ message: "Tarea creada exitosamente", task: result });
+  } catch (error) {
+    console.error("Error al agregar la tarea:", error);
+    return res
+      .status(500)
+      .json({ message: "Error interno al agregar la tarea." });
+  }
+};
+
+const addMeeting = async (req, res) => {
+  console.log("Si entro en el controlador para agregar reunión");
+
+  // Recibe el objeto de la reunión directamente desde el cuerpo de la solicitud
+  const meeting = req.body;
+  const { nombre_reunion, fecha, id_usuario } = meeting; // Extraemos los campos necesarios del objeto reunión
+  console.log(
+    "Nombre de la reunión: ",
+    nombre_reunion,
+    "Fecha: ",
+    fecha,
+    "ID del organizador: ",
+    id_usuario
+  );
+
+  // Verificamos si los datos esenciales están presentes
+  if (!nombre_reunion || !fecha || !id_usuario) {
+    return res.status(400).json({
+      message: "Faltan datos esenciales (nombre_reunión, fecha o id_usuario).",
+    });
+  }
+
+  try {
+    // Buscar el usuario por id_usuario (se asume que id_usuario se refiere al organizador)
+    const usuario = await findUserById(id_usuario); // Suponiendo que 'findUserById' es una función que encuentra el usuario por su ID
+    if (!usuario) {
+      return res.status(404).json({ message: "Usuario no encontrado." });
+    }
+
+    // Crear la nueva reunión
+    const result = await createNewMeeting(meeting); // Usamos la función 'createNewMeeting' para guardar la reunión en la base de datos
+    if (!result) {
+      return res.status(500).json({ message: "Error al crear la reunión." });
+    }
+
+    // Retornamos la reunión creada
+    return res
+      .status(201)
+      .json({ message: "Reunión creada exitosamente", meeting: result });
+  } catch (error) {
+    console.error("Error al agregar la reunión:", error);
+    return res
+      .status(500)
+      .json({ message: "Error interno al agregar la reunión." });
+  }
+};
+
+module.exports = {
+  getUsers,
+  getUserById,
+  updateUser,
+  deleteUser,
+  addTask,
+  loadTasks,
+  deleteTask,
+  getTaskById,
+  updateTask,
+  addMeeting,
+};

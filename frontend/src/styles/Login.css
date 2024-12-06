@@ -1,0 +1,14 @@
+.login-container {
+  position: relative;
+  color: white; /* Cambia esto según el fondo */
+  text-align: center;
+}
+
+.card {
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.9); /* Color de fondo semi-transparente */
+}
+
+.card h2 {
+  margin-bottom: 1rem;
+}
