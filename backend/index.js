@@ -17,6 +17,11 @@ app.use("/api/auth", authRoute);
 app.use("/api/register", registerRoute);
 app.use("/api/admin", adminRoute);
 
+// Ruta básica para la raíz
+app.get('/', (req, res) => {
+  res.send('¡Bienvenido al Backend!'); // O lo que quieras que se muestre en la raíz
+});
+
 // Middleware de manejo de errores (opcional)
 app.use((err, req, res, next) => {
   console.error(err.stack);
