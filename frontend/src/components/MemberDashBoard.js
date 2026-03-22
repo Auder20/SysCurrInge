@@ -1,40 +1,45 @@
 // src/components/MemberDashboard/MemberDashboard.js
-import React from "react";
+import React, { useState } from "react";
 import TaskList from "./TaskList";
 import MeetingList from "./MeetingList";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import "../global.css";
 
 function MemberDashboard() {
+  const [activeSection, setActiveSection] = useState("tasks");
   const navigate = useNavigate();
   const { logout } = useAuth();
 
-  function handleLogout() {
-    logout();
-    navigate("/login");
-  }
+  const sections = {
+    tasks: { label: "Mis Tareas", icon: "✅", component: <TaskList /> },
+    meetings: { label: "Mis Reuniones", icon: "📅", component: <MeetingList /> },
+  };
 
   return (
-    <div className="container p-4">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1 className="mb-0">Panel del Miembro</h1>
-        <button className="btn btn-danger" onClick={handleLogout}>
-          Cerrar sesión
+    <div className="dashboard-layout">
+      <nav className="dashboard-sidebar">
+        <div className="sidebar-logo">⚡ SysCurringe</div>
+        <span className="sidebar-section-label">Panel Miembro</span>
+        {Object.entries(sections).map(([key, { label, icon }]) => (
+          <button key={key} className={`sidebar-item ${activeSection === key ? 'active' : ''}`} onClick={() => setActiveSection(key)}>
+            <span>{icon}</span>{label}
+          </button>
+        ))}
+        <div style={{ flex: 1 }} />
+        <button className="sidebar-item danger" onClick={() => { logout(); navigate('/login'); }}>
+          🚪 Cerrar sesión
         </button>
-      </div>
-
-      {/* Sección de tareas asignadas */}
-      <section className="mb-5">
-        <h2 className="text-primary mb-3">Tareas Asignadas</h2>
-        <TaskList />
-      </section>
-
-      {/* Sección de reuniones programadas */}
-      <section>
-        <h2 className="text-primary mb-3">Reuniones Programadas</h2>
-        <MeetingList />
-      </section>
+      </nav>
+      <main className="dashboard-main">
+        <div className="page-header">
+          <h1 className="page-title">{sections[activeSection].label}</h1>
+          <p className="page-subtitle">Revisa tus {sections[activeSection].label.toLowerCase()}</p>
+        </div>
+        <div className="card-custom">
+          {sections[activeSection].component}
+        </div>
+      </main>
     </div>
   );
 }

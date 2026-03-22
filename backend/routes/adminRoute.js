@@ -24,7 +24,7 @@ const router = express.Router();
 
 // Aplicar middleware de autenticación y autorización a todas las rutas
 router.use(authMiddleware);
-router.use(roleMiddleware);
+router.use(roleMiddleware(['administrador']));
 
 router.get("/loadUsers", getUsers);
 router.get("/loadUserById", getUserById);

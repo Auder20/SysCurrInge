@@ -4,6 +4,17 @@ import api from "../services/api";
 const CoordinatorContext = createContext();
 
 export const CoordinatorProvider = ({ children }) => {
+  // User functions
+  async function loadAllUsers() {
+    try {
+      const response = await api.get("/coordinator/loadUsers");
+      return response.data;
+    } catch (error) {
+      console.error("Error al cargar todos los usuarios:", error);
+      return [];
+    }
+  }
+
   // Task functions
   async function loadAllTasks() {
     try {
@@ -94,6 +105,7 @@ export const CoordinatorProvider = ({ children }) => {
   return (
     <CoordinatorContext.Provider
       value={{
+        loadAllUsers,
         loadAllTasks,
         addTask,
         deleteTask,

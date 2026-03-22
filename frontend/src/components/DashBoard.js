@@ -1,37 +1,37 @@
 import React, { useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { Link } from "react-router-dom"; // Importar Link
+import { Link } from "react-router-dom";
+import "../global.css";
 
 // Componente Navbar simplificado
 const Navbar = () => (
-  <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a className="navbar-brand" href="#">
-      Dashboard
+  <nav className="navbar navbar-expand-lg" style={{ backgroundColor: 'var(--bg-sidebar)', padding: '12px 24px' }}>
+    <a className="navbar-brand" style={{ color: '#fff', fontSize: '18px', fontWeight: 700, textDecoration: 'none' }} href="#">
+      ⚡ SysCurringe
     </a>
     <div className="collapse navbar-collapse">
-      <ul className="navbar-nav mr-auto">
+      <ul className="navbar-nav" style={{ display: 'flex', gap: '24px', margin: 0, padding: 0, listStyle: 'none' }}>
         <li className="nav-item">
-          <Link className="nav-link" to="/">
+          <Link className="nav-link" style={{ color: 'rgba(255,255,255,0.65)', textDecoration: 'none', padding: '8px 12px', borderRadius: 'var(--radius-sm)', transition: 'all var(--transition)' }} to="/" onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = 'rgba(255,255,255,0.65)'} >
             Inicio
           </Link>
         </li>
         <li className="nav-item">
-          <Link className="nav-link" to="/reuniones">
+          <Link className="nav-link" style={{ color: 'rgba(255,255,255,0.65)', textDecoration: 'none', padding: '8px 12px', borderRadius: 'var(--radius-sm)', transition: 'all var(--transition)' }} to="/reuniones" onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = 'rgba(255,255,255,0.65)'} >
             Reuniones
           </Link>
         </li>
         <li className="nav-item">
-          <Link className="nav-link" to="/actas">
+          <Link className="nav-link" style={{ color: 'rgba(255,255,255,0.65)', textDecoration: 'none', padding: '8px 12px', borderRadius: 'var(--radius-sm)', transition: 'all var(--transition)' }} to="/actas" onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = 'rgba(255,255,255,0.65)'} >
             Actas
           </Link>
         </li>
         <li className="nav-item">
-          <Link className="nav-link" to="/tareas">
+          <Link className="nav-link" style={{ color: 'rgba(255,255,255,0.65)', textDecoration: 'none', padding: '8px 12px', borderRadius: 'var(--radius-sm)', transition: 'all var(--transition)' }} to="/tareas" onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = 'rgba(255,255,255,0.65)'} >
             Tareas
           </Link>
         </li>
         <li className="nav-item">
-          <Link className="nav-link" to="/repositorio">
+          <Link className="nav-link" style={{ color: 'rgba(255,255,255,0.65)', textDecoration: 'none', padding: '8px 12px', borderRadius: 'var(--radius-sm)', transition: 'all var(--transition)' }} to="/repositorio" onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = 'rgba(255,255,255,0.65)'} >
             Repositorio
           </Link>
         </li>
@@ -42,12 +42,12 @@ const Navbar = () => (
 
 // Componente ProximasReuniones simplificado
 const ProximasReuniones = ({ reuniones }) => (
-  <div className="card mb-3">
-    <div className="card-header">Próximas Reuniones</div>
-    <ul className="list-group list-group-flush">
-      {reuniones.map((reunion, index) => (
-        <li className="list-group-item" key={index}>
-          {reunion.fecha} - {reunion.tema}
+  <div className="card-custom mb-4">
+    <div style={{ fontSize: '18px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '16px' }}>Próximas Reuniones</div>
+    <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+      {reuniones.map((union, index) => (
+        <li key={index} style={{ padding: '12px 16px', borderBottom: index < reuniones.length - 1 ? `1px solid var(--border)` : 'none', color: 'var(--text-primary)' }}>
+          {union.fecha} - {union.tema}
         </li>
       ))}
     </ul>
@@ -56,11 +56,11 @@ const ProximasReuniones = ({ reuniones }) => (
 
 // Componente TareasPendientes simplificado
 const TareasPendientes = ({ tareas }) => (
-  <div className="card mb-3">
-    <div className="card-header">Tareas Pendientes</div>
-    <ul className="list-group list-group-flush">
+  <div className="card-custom mb-4">
+    <div style={{ fontSize: '18px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '16px' }}>Tareas Pendientes</div>
+    <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
       {tareas.map((tarea, index) => (
-        <li className="list-group-item" key={index}>
+        <li key={index} style={{ padding: '12px 16px', borderBottom: index < tareas.length - 1 ? `1px solid var(--border)` : 'none', color: 'var(--text-primary)' }}>
           {tarea.descripcion} - Vence: {tarea.fechaLimite}
         </li>
       ))}
@@ -70,11 +70,11 @@ const TareasPendientes = ({ tareas }) => (
 
 // Componente ActasRecientes simplificado
 const ActasRecientes = ({ actas }) => (
-  <div className="card mb-3">
-    <div className="card-header">Actas Recientes</div>
-    <ul className="list-group list-group-flush">
+  <div className="card-custom mb-4">
+    <div style={{ fontSize: '18px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '16px' }}>Actas Recientes</div>
+    <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
       {actas.map((acta, index) => (
-        <li className="list-group-item" key={index}>
+        <li key={index} style={{ padding: '12px 16px', borderBottom: index < actas.length - 1 ? `1px solid var(--border)` : 'none', color: 'var(--text-primary)' }}>
           {acta.titulo} - {acta.fecha}
         </li>
       ))}
@@ -87,15 +87,15 @@ const BuscadorRapido = () => {
   const [busqueda, setBusqueda] = useState("");
 
   return (
-    <div className="card mb-3">
-      <div className="card-header">Buscador Rápido</div>
-      <div className="card-body">
+    <div className="card-custom">
+      <div style={{ fontSize: '18px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '16px' }}>Buscador Rápido</div>
+      <div className="card-body" style={{ padding: 0 }}>
         <input
           type="text"
           placeholder="Buscar..."
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
-          className="form-control"
+          className="form-control-custom"
         />
       </div>
     </div>
@@ -121,13 +121,19 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="container mt-4">
+    <div style={{ backgroundColor: 'var(--bg-page)', minHeight: '100vh' }}>
       <Navbar />
-      <div className="mt-4">
-        <ProximasReuniones reuniones={reuniones} />
-        <TareasPendientes tareas={tareas} />
-        <ActasRecientes actas={actas} />
-        <BuscadorRapido />
+      <div className="container" style={{ padding: '32px 24px' }}>
+        <div className="row">
+          <div className="col-lg-8">
+            <ProximasReuniones reuniones={reuniones} />
+            <TareasPendientes tareas={tareas} />
+            <ActasRecientes actas={actas} />
+          </div>
+          <div className="col-lg-4">
+            <BuscadorRapido />
+          </div>
+        </div>
       </div>
     </div>
   );

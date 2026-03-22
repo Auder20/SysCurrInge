@@ -72,108 +72,36 @@ function Login() {
   }
 
   return (
-    <div
-      className="login-container"
-      style={{
-        backgroundColor: "#e0f7fa",
-        height: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <div
-        className="card p-4 shadow"
-        style={{ width: "300%", maxWidth: "300px", borderRadius: "10px" }}
-      >
-        <h2
-          className="text-center mb-4"
-          style={{
-            fontFamily: "Arial, sans-serif",
-            color: "#333",
-            fontWeight: "bold",
-          }}
-        >
-          Inicio de Sesión
-        </h2>
-        <form
-          onSubmit={loginButton}
-          className="d-flex flex-column align-items-center"
-        >
-          <div className="mb-3 w-100">
-            <input
-              type="email"
-              className="form-control"
-              placeholder="Correo Electrónico"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              style={{ borderRadius: "5px", padding: "10px" }}
-              required
-            />
-          </div>
-          <div className="mb-3 w-100">
-            <input
-              type="password"
-              className="form-control"
-              placeholder="Contraseña"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              style={{ borderRadius: "5px", padding: "10px" }}
-              required
-            />
-          </div>
-          <div className="d-flex justify-content-between w-100 mb-3">
-            <button
-              type="button"
-              className="btn btn-secondary me-2"
-              onClick={handleCancel}
-              style={{
-                backgroundColor: "#6c757d",
-                border: "none",
-                borderRadius: "5px",
-                padding: "10px 15px",
-              }} // Estilo del botón
-              onMouseOver={(e) =>
-                (e.currentTarget.style.backgroundColor = "#5a6268")
-              } // Efecto hover
-              onMouseOut={(e) =>
-                (e.currentTarget.style.backgroundColor = "#6c757d")
-              }
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              className="btn btn-primary me-2"
-              disabled={loading}
-              style={{
-                backgroundColor: "#007bff",
-                border: "none",
-                borderRadius: "5px",
-                padding: "10px 15px",
-              }} // Estilo del botón
-              onMouseOver={(e) =>
-                (e.currentTarget.style.backgroundColor = "#0056b3")
-              } // Efecto hover
-              onMouseOut={(e) =>
-                (e.currentTarget.style.backgroundColor = "#007bff")
-              }
-            >
-              {loading ? "Cargando..." : "Iniciar Sesión"}
-            </button>
-          </div>
-          {error && (
-            <p className="text-danger mb-1" style={{ marginBottom: "5px" }}>
-              {error}
-            </p>
-          )}
-        </form>
-        <p className="text-center mt-1" style={{ marginTop: "5px" }}>
-          ¿No te has registrado?{" "}
-          <button className="btn btn-link" onClick={handleRegister}>
-            Regístrate aquí
-          </button>
+    <div style={{ display: 'flex', minHeight: '100vh' }}>
+      <div className="d-none d-md-flex" style={{ flex: 1, background: 'linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%)', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '48px', color: '#fff' }}>
+        <div style={{ fontSize: '48px', marginBottom: '16px' }}>⚡</div>
+        <h1 style={{ fontSize: '36px', fontWeight: 700, margin: '0 0 12px' }}>SysCurringe</h1>
+        <p style={{ fontSize: '16px', opacity: 0.75, textAlign: 'center', maxWidth: '280px', lineHeight: 1.7, margin: 0 }}>
+          Gestión de reuniones, tareas y participantes en un solo lugar.
         </p>
+      </div>
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px', background: '#fff' }}>
+        <div style={{ width: '100%', maxWidth: '380px' }}>
+          <h2 style={{ fontSize: '28px', fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 6px' }}>Bienvenido de nuevo</h2>
+          <p style={{ fontSize: '14px', color: 'var(--text-secondary)', margin: '0 0 32px' }}>Ingresa tus credenciales para continuar</p>
+          <form onSubmit={loginButton}>
+            <div className="form-group-custom">
+              <label className="form-label-custom">Correo electrónico</label>
+              <input type="email" className="form-control-custom" placeholder="correo@ejemplo.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            </div>
+            <div className="form-group-custom">
+              <label className="form-label-custom">Contraseña</label>
+              <input type="password" className="form-control-custom" placeholder="•••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            </div>
+            {error && <div className="alert-error">{error}</div>}
+            <button type="submit" className="btn-primary-custom" style={{ width: '100%', padding: '12px', marginBottom: '10px' }} disabled={loading}>
+              {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+            </button>
+            <button type="button" className="btn-secondary-custom" style={{ width: '100%', padding: '12px' }} onClick={handleRegister}>
+              Crear cuenta nueva
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

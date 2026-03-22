@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Card, InputGroup, FormControl } from "react-bootstrap";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { jwtDecode } from "jwt-decode";
 import useCoordinator from "../hooks/useCoordinator";
+import "../global.css";
 
 function TaskManagement() {
   const navigate = useNavigate();
 
-  const [tasks, setTasks] = useState([]); // Estado para las tareas
-  const [loading, setLoading] = useState(true); // Estado de carga
-  const [currentPage, setCurrentPage] = useState(1); // Página actual
-  const [tasksPerPage] = useState(6); // Número de tareas por página
-  const [searchQuery, setSearchQuery] = useState(""); // Query de búsqueda
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [tasksPerPage] = useState(10);
+  const [searchQuery, setSearchQuery] = useState("");
   const { loadAllTasks, deleteTask } = useCoordinator();
 
   useEffect(() => {
@@ -31,18 +31,15 @@ function TaskManagement() {
     loadTasks();
   }, [loadAllTasks]);
 
-  // Función para registrar una nueva tarea
   function handleRegister() {
     navigate("/addTaskForm");
   }
 
-  // Función para editar tarea
   const editTask = (taskId) => {
     navigate("/editTask/" + taskId);
     console.log(`Editar tarea ${taskId}`);
   };
 
-  // Función para eliminar tarea
   async function handleDeleteTask(taskId) {
     if (window.confirm("¿Estás seguro de que deseas eliminar esta tarea?")) {
       try {
@@ -57,144 +54,85 @@ function TaskManagement() {
     }
   }
 
-  // Filtrar tareas por el query de búsqueda
   const filteredTasks = tasks.filter((task) => {
     return task.descripcion.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
-  // Paginación
   const indexOfLastTask = currentPage * tasksPerPage;
   const indexOfFirstTask = indexOfLastTask - tasksPerPage;
   const currentTasks = filteredTasks.slice(indexOfFirstTask, indexOfLastTask);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  // Número total de páginas
   const totalPages = Math.ceil(filteredTasks.length / tasksPerPage);
 
+  const getStatusBadge = (status) => {
+    const statusClass = status === 'pendiente' ? 'badge-status-pendiente' : 
+                       status === 'en_progreso' ? 'badge-status-en-progreso' : 
+                       'badge-status-completada';
+    return <span className={statusClass}>{status}</span>;
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "Sin fecha";
+    return new Date(dateString).toLocaleDateString('es-CO');
+  };
+
   return (
-    <div className="p-4">
-      <h3 className="text-center mb-4">Gestión de Tareas</h3>
-
-      {/* Barra de búsqueda */}
-      <div className="mb-4">
-        <InputGroup className="mb-3">
-          <FormControl
-            placeholder="Buscar tarea..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </InputGroup>
+  <div>
+    <div className="toolbar">
+      <div className="search-wrap">
+        <input className="search-bar-custom" type="text" placeholder="Buscar tarea..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
       </div>
-
-      {/* Botón para agregar tarea */}
-      <div className="d-flex justify-content-center mb-3">
-        <Button onClick={handleRegister} className="btn btn-primary">
-          Agregar Tarea
-        </Button>
-      </div>
-
-      {/* Mostrar tareas */}
-      {loading ? (
-        <div className="text-center">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Cargando...</span>
-          </div>
-        </div>
-      ) : (
-        <div>
-          <div className="row row-cols-1 g-4">
-            {currentTasks.length === 0 ? (
-              <div className="text-center col-12">
-                No hay tareas registradas.
-              </div>
-            ) : (
-              currentTasks.map((task) => (
-                <div key={task.id_tarea} className="col">
-                  <Card className="shadow-lg border-light rounded">
-                    <Card.Body>
-                      <Card.Title>{task.descripcion}</Card.Title>
-                      <Card.Text>
-                        <strong>Fecha de Vencimiento:</strong>{" "}
-                        {task.fecha_vencimiento}
-                      </Card.Text>
-                      <Card.Text>
-                        <strong>Estado:</strong> {task.estado}
-                      </Card.Text>
-                      <div className="d-flex justify-content-end">
-                        <Button
-                          onClick={() => editTask(task.id_tarea)}
-                          variant="outline-warning"
-                          size="sm"
-                          className="me-2"
-                        >
-                          <FaEdit /> Editar
-                        </Button>
-                        <Button
-                          onClick={() => handleDeleteTask(task.id_tarea)}
-                          variant="outline-danger"
-                          size="sm"
-                        >
-                          <FaTrash /> Eliminar
-                        </Button>
-                      </div>
-                    </Card.Body>
-                    <Card.Footer className="text-center">
-                      <small className="text-muted">
-                        Última actualización:{" "}
-                        {task.fecha_actualizacion || "N/A"}
-                      </small>
-                    </Card.Footer>
-                  </Card>
-                </div>
-              ))
-            )}
-          </div>
-
-          {/* Paginación */}
-          <div className="d-flex justify-content-center mt-4">
-            <nav aria-label="Page navigation">
-              <ul className="pagination">
-                <li className="page-item">
-                  <button
-                    className="page-link"
-                    onClick={() => paginate(currentPage - 1)}
-                    disabled={currentPage === 1}
-                  >
-                    Anterior
-                  </button>
-                </li>
-                {[...Array(totalPages)].map((_, index) => (
-                  <li
-                    key={index}
-                    className={`page-item ${
-                      currentPage === index + 1 ? "active" : ""
-                    }`}
-                  >
-                    <button
-                      className="page-link"
-                      onClick={() => paginate(index + 1)}
-                    >
-                      {index + 1}
-                    </button>
-                  </li>
-                ))}
-                <li className="page-item">
-                  <button
-                    className="page-link"
-                    onClick={() => paginate(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                  >
-                    Siguiente
-                  </button>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
-      )}
+      <button className="btn-primary-custom" onClick={handleRegister}>+ Agregar Tarea</button>
     </div>
-  );
+
+    {loading ? (
+      <div className="loading-wrap">
+        <div className="spinner-border text-primary" role="status" />
+        <span>Cargando tareas...</span>
+      </div>
+    ) : (
+      <>
+        <div style={{ overflowX: 'auto' }}>
+          <table className="table-custom">
+            <thead>
+              <tr>
+                <th>Descripción</th>
+                <th>Vencimiento</th>
+                <th>Estado</th>
+                <th style={{ textAlign: 'right' }}>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentTasks.length === 0 ? (
+                <tr><td colSpan={4} style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>No hay tareas registradas.</td></tr>
+              ) : currentTasks.map((task) => (
+                <tr key={task.id_tarea}>
+                  <td style={{ maxWidth: '300px' }}>{task.descripcion}</td>
+                  <td style={{ color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
+                    {task.fecha_vencimiento ? new Date(task.fecha_vencimiento).toLocaleDateString('es-CO') : '—'}
+                  </td>
+                  <td><span className={`badge-${task.estado}`}>{task.estado?.replace('_', ' ')}</span></td>
+                  <td style={{ textAlign: 'right' }}>
+                    <button className="btn-icon" title="Editar" onClick={() => editTask(task.id_tarea)}>✏️</button>
+                    <button className="btn-icon" title="Eliminar" onClick={() => handleDeleteTask(task.id_tarea)}>🗑️</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="pagination-custom">
+          <button className="page-btn" onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>← Anterior</button>
+          {[...Array(totalPages)].map((_, i) => (
+            <button key={i} className={`page-btn ${currentPage === i + 1 ? 'active' : ''}`} onClick={() => paginate(i + 1)}>{i + 1}</button>
+          ))}
+          <button className="page-btn" onClick={() => paginate(currentPage + 1)} disabled={currentPage === totalPages}>Siguiente →</button>
+        </div>
+      </>
+    )}
+  </div>
+);
 }
 
 export default TaskManagement;

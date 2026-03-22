@@ -1,40 +1,45 @@
 // src/components/GuestDashboard/GuestDashboard.js
-import React from "react";
+import React, { useState } from "react";
 import MeetingList from "./MeetingList";
 import MinutesList from "./MinutesList";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import "../global.css";
 
 function GuestDashboard() {
+  const [activeSection, setActiveSection] = useState("meetings");
   const navigate = useNavigate();
   const { logout } = useAuth();
 
-  function handleLogout() {
-    logout();
-    navigate("/login");
-  }
+  const sections = {
+    meetings: { label: "Reuniones", icon: "📅", component: <MeetingList /> },
+    minutes: { label: "Actas", icon: "📄", component: <MinutesList /> },
+  };
 
   return (
-    <div className="container p-4">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1 className="mb-0">Panel de Invitado</h1>
-        <button className="btn btn-danger" onClick={handleLogout}>
-          Cerrar sesión
+    <div className="dashboard-layout">
+      <nav className="dashboard-sidebar">
+        <div className="sidebar-logo">⚡ SysCurringe</div>
+        <span className="sidebar-section-label">Panel Invitado</span>
+        {Object.entries(sections).map(([key, { label, icon }]) => (
+          <button key={key} className={`sidebar-item ${activeSection === key ? 'active' : ''}`} onClick={() => setActiveSection(key)}>
+            <span>{icon}</span>{label}
+          </button>
+        ))}
+        <div style={{ flex: 1 }} />
+        <button className="sidebar-item danger" onClick={() => { logout(); navigate('/login'); }}>
+          🚪 Cerrar sesión
         </button>
-      </div>
-
-      {/* Sección de reuniones */}
-      <section className="mb-5">
-        <h2 className="text-primary mb-3">Reuniones Programadas</h2>
-        <MeetingList />
-      </section>
-
-      {/* Sección de actas */}
-      <section>
-        <h2 className="text-primary mb-3">Actas Disponibles</h2>
-        <MinutesList />
-      </section>
+      </nav>
+      <main className="dashboard-main">
+        <div className="page-header">
+          <h1 className="page-title">{sections[activeSection].label}</h1>
+          <p className="page-subtitle">Consulta las {sections[activeSection].label.toLowerCase()} disponibles</p>
+        </div>
+        <div className="card-custom">
+          {sections[activeSection].component}
+        </div>
+      </main>
     </div>
   );
 }

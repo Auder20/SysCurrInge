@@ -1,45 +1,47 @@
 // src/components/CoordinatorDashboard/CoordinatorDashboard.js
-import React from "react";
+import React, { useState } from "react";
 import TaskManagement from "./TaskManagement";
 import MeetingScheduler from "./MeetingScheduler";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { CoordinatorProvider } from "../context/CoordinatorContext";
+import "../global.css";
 
 function CoordinatorDashboard() {
+  const [activeSection, setActiveSection] = useState("tasks");
   const navigate = useNavigate();
   const { logout } = useAuth();
 
-  function handleLogout() {
-    logout();
-    navigate("/login");
-  }
+  const sections = {
+    tasks: { label: "Tareas", icon: "✅", component: <TaskManagement /> },
+    meetings: { label: "Reuniones", icon: "📅", component: <MeetingScheduler /> },
+  };
 
   return (
     <CoordinatorProvider>
-      <div className="container p-4">
-        <h1 className="text-center mb-4">Panel de Coordinador</h1>
-
-        {/* Botón para cerrar sesión */}
-        <button
-          className="btn btn-danger position-absolute top-0 end-0 m-3"
-          onClick={handleLogout}
-        >
-          Cerrar sesión
-        </button>
-
-        {/* Sección de gestión de tareas */}
-        <section className="mb-5">
-          <h2 className="text-primary mb-3">Gestión de Tareas</h2>
-          <TaskManagement />
-        </section>
-
-        {/* Sección de programación de reuniones */}
-        <section>
-          <h2 className="text-primary mb-3">Programación de Reuniones</h2>
-          <MeetingScheduler />
-        </section>
+      <div className="dashboard-layout">
+        <nav className="dashboard-sidebar">
+          <div className="sidebar-logo">⚡ SysCurringe</div>
+          <span className="sidebar-section-label">Panel Coordinador</span>
+          {Object.entries(sections).map(([key, { label, icon }]) => (
+            <button key={key} className={`sidebar-item ${activeSection === key ? 'active' : ''}`} onClick={() => setActiveSection(key)}>
+              <span>{icon}</span>{label}
+            </button>
+          ))}
+          <div style={{ flex: 1 }} />
+          <button className="sidebar-item danger" onClick={() => { logout(); navigate('/login'); }}>
+            🚪 Cerrar sesión
+          </button>
+        </nav>
+        <main className="dashboard-main">
+          <div className="page-header">
+            <h1 className="page-title">{sections[activeSection].label}</h1>
+            <p className="page-subtitle">Gestiona las {sections[activeSection].label.toLowerCase()} del sistema</p>
+          </div>
+          <div className="card-custom">
+            {sections[activeSection].component}
+          </div>
+        </main>
       </div>
     </CoordinatorProvider>
   );

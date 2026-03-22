@@ -12,6 +12,9 @@ const {
   addMeeting,
   deleteMeetingById,
 } = require("../controllers/adminController");
+const {
+  getUsers,
+} = require("../controllers/adminController");
 const roleMiddleware = require("../middlewares/roleMiddleware");
 
 const router = express.Router();
@@ -31,5 +34,8 @@ router.put("/updateTask", updateTask);
 router.get("/loadMeetings", getMeetings);
 router.post("/addMeeting", addMeeting);
 router.delete("/deleteMeeting/:id", deleteMeetingById);
+
+// User routes for coordinators
+router.get("/loadUsers", getUsers);
 
 module.exports = router;

@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Button, Form, Container, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import useAdmin from "../hooks/useAdmin";
+import "../global.css";
 
 const AddTaskForm = () => {
   const [descripcion, setDescripcion] = useState("");
   const [fechaVencimiento, setFechaVencimiento] = useState("");
   const [estado, setEstado] = useState("pendiente");
-  const [rolSeleccionado, setRolSeleccionado] = useState(""); // Tipo de usuario seleccionado
-  const [usuarioId, setUsuarioId] = useState(""); // ID del usuario
-  const [users, setUsers] = useState([]); // Lista de usuarios cargados
+  const [rolSeleccionado, setRolSeleccionado] = useState("");
+  const [usuarioId, setUsuarioId] = useState("");
+  const [users, setUsers] = useState([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
   const navigate = useNavigate();
   const { addTask, loadAllUsers } = useAdmin();
 
-  // Cargar usuarios cuando el componente se monte
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -32,12 +31,10 @@ const AddTaskForm = () => {
     fetchUsers();
   }, [loadAllUsers]);
 
-  // Filtrar usuarios por rol seleccionado
   const filteredUsers = users.filter(user => 
     user.rol === rolSeleccionado || user.tipo_usuario === rolSeleccionado
   );
 
-  // Resetear usuarioId cuando cambia el rol seleccionado
   useEffect(() => {
     setUsuarioId("");
   }, [rolSeleccionado]);
@@ -45,7 +42,6 @@ const AddTaskForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Mostrar datos en consola para depuración
     console.log("Datos enviados: ", {
       descripcion,
       fecha_vencimiento: fechaVencimiento,
@@ -54,40 +50,32 @@ const AddTaskForm = () => {
       id_usuario: usuarioId,
     });
 
-    // Objeto nueva tarea a enviar
     const nuevaTarea = {
       descripcion,
       fecha_vencimiento: fechaVencimiento,
       estado,
       id_usuario: parseInt(usuarioId),
-      rol: rolSeleccionado, // Enviar el rol del usuario seleccionado
+      rol: rolSeleccionado,
     };
 
     try {
-      // Llamar a la función addTask del hook useAdmin
-      const res = await addTask(nuevaTarea); // Esto llama a tu función que hace la petición al servidor
+      const res = await addTask(nuevaTarea);
 
-      // Comprobamos si la respuesta es exitosa (status 200-299)
       if (res && res.message) {
         if (res.message === "Tarea creada exitosamente") {
-          // Limpiar el formulario si la tarea se creó correctamente
           setDescripcion("");
           setFechaVencimiento("");
           setUsuarioId("");
           setRolSeleccionado("");
           setEstado("pendiente");
 
-          // Mostrar alerta de éxito
           alert("La tarea fue registrada con éxito.");
-
-          // Redirigir a la página de listado de tareas
           navigate(-1);
         } else {
           alert(res.message || "Error desconocido al agregar la tarea.");
         }
       }
     } catch (err) {
-      // Manejar cualquier error de la petición
       console.error("Error en el envío de la tarea:", err.message);
       alert("Hubo un error al enviar la tarea.");
     }
@@ -99,42 +87,44 @@ const AddTaskForm = () => {
     setUsuarioId("");
     setRolSeleccionado("");
     setEstado("pendiente");
-    navigate(-1); // Regresar a la página anterior
+    navigate(-1);
   };
 
   return (
-    <Container className="mt-5">
-      <Row className="justify-content-center">
-        <Col md={6}>
-          <h2 className="text-center mb-4">Agregar Nueva Tarea</h2>
-
-          <Form onSubmit={handleSubmit} className="shadow p-4 bg-light rounded">
-            <Form.Group controlId="formDescripcion">
-              <Form.Label>Descripción</Form.Label>
-              <Form.Control
-                as="textarea"
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-page)' }}>
+      <div className="d-flex justify-content-center align-items-center min-h-screen p-4">
+        <div className="card-custom" style={{ maxWidth: '480px', margin: '40px auto' }}>
+          <h2 style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 6px' }}>Agregar Nueva Tarea</h2>
+          <hr style={{ opacity: 0.1, margin: '0 0 24px' }} />
+          
+          <form onSubmit={handleSubmit}>
+            <div className="form-group-custom">
+              <label className="form-label-custom">Descripción</label>
+              <textarea
+                className="form-control-custom"
                 rows={5}
                 placeholder="Descripción de la tarea"
                 value={descripcion}
                 onChange={(e) => setDescripcion(e.target.value)}
                 required
               />
-            </Form.Group>
+            </div>
 
-            <Form.Group controlId="formFechaVencimiento" className="mt-3">
-              <Form.Label>Fecha de Vencimiento</Form.Label>
-              <Form.Control
+            <div className="form-group-custom">
+              <label className="form-label-custom">Fecha de Vencimiento</label>
+              <input
                 type="date"
+                className="form-control-custom"
                 value={fechaVencimiento}
                 onChange={(e) => setFechaVencimiento(e.target.value)}
                 required
               />
-            </Form.Group>
+            </div>
 
-            <Form.Group controlId="formRol" className="mt-3">
-              <Form.Label>Tipo de Usuario</Form.Label>
-              <Form.Control
-                as="select"
+            <div className="form-group-custom">
+              <label className="form-label-custom">Tipo de Usuario</label>
+              <select
+                className="form-control-custom"
                 value={rolSeleccionado}
                 onChange={(e) => setRolSeleccionado(e.target.value)}
                 required
@@ -143,26 +133,26 @@ const AddTaskForm = () => {
                 <option value="administrador">Administrador</option>
                 <option value="coordinador">Coordinador</option>
                 <option value="participante">Participante</option>
-              </Form.Control>
-            </Form.Group>
+              </select>
+            </div>
 
             {rolSeleccionado && (
-              <Form.Group controlId="formUsuarioId" className="mt-3">
-                <Form.Label>Seleccionar Usuario</Form.Label>
+              <div className="form-group-custom">
+                <label className="form-label-custom">Seleccionar Usuario</label>
                 {loadingUsers ? (
-                  <Form.Control>
+                  <div className="form-control-custom d-flex align-items-center" style={{ backgroundColor: '#f8f9fa' }}>
                     <div className="spinner-border spinner-border-sm me-2" role="status">
                       <span className="visually-hidden">Cargando...</span>
                     </div>
                     Cargando usuarios...
-                  </Form.Control>
+                  </div>
                 ) : filteredUsers.length === 0 ? (
-                  <Form.Control>
+                  <div className="form-control-custom" style={{ backgroundColor: '#f8f9fa' }}>
                     No hay usuarios disponibles para este rol
-                  </Form.Control>
+                  </div>
                 ) : (
-                  <Form.Control
-                    as="select"
+                  <select
+                    className="form-control-custom"
                     value={usuarioId}
                     onChange={(e) => setUsuarioId(e.target.value)}
                     required
@@ -173,27 +163,21 @@ const AddTaskForm = () => {
                         {user.nombre} {user.apellido} ({user.correo_electronico})
                       </option>
                     ))}
-                  </Form.Control>
+                  </select>
                 )}
-              </Form.Group>
+              </div>
             )}
 
-            <div className="d-flex justify-content-between mt-4">
-              <Button
-                variant="secondary"
-                onClick={handleCancel}
-                className="w-48"
-              >
-                Cancelar
-              </Button>
-              <Button variant="primary" type="submit" className="w-48">
-                Agregar Tarea
-              </Button>
-            </div>
-          </Form>
-        </Col>
-      </Row>
-    </Container>
+            <button type="submit" className="btn-primary-custom" style={{ width: '100%' }}>
+              Agregar Tarea
+            </button>
+            <button type="button" className="btn-secondary-custom" style={{ width: '100%', marginTop: '10px' }} onClick={handleCancel}>
+              Cancelar
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
   );
 };
 

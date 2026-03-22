@@ -1,57 +1,49 @@
-// src/components/AdminDashboard/AdminDashboard.js
-import React from "react";
+// src/components/AdminDashboard.js
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 import UserManagement from "./UserManagement";
 import TaskManagement from "./TaskManagement";
 import MeetingScheduler from "./MeetingScheduler";
 import Reports from "./Reports";
-import "bootstrap/dist/css/bootstrap.min.css";
+import "../global.css";
 
 function AdminDashboard() {
+  const [activeSection, setActiveSection] = useState("users");
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const sections = {
+    users:    { label: "Usuarios",   icon: "👥", component: <UserManagement /> },
+    tasks:    { label: "Tareas",     icon: "✅", component: <TaskManagement /> },
+    meetings: { label: "Reuniones",  icon: "📅", component: <MeetingScheduler /> },
+    reports:  { label: "Reportes",   icon: "📊", component: <Reports /> },
+  };
+
   return (
-    <div className="container mt-4">
-      <h1 className="text-center mb-4">Admin Dashboard</h1>
-
-      <div className="row">
-        {/* User Management que ocupa todo el ancho */}
-        <section className="col-12 mb-4">
-          <div className="card shadow-sm">
-            <div className="card-body">
-              <h3 className="card-title">User Management</h3>
-              <UserManagement />
-            </div>
-          </div>
-        </section>
-
-        {/* Task Management debajo de User Management */}
-        <section className="col-12 mb-4">
-          <div className="card shadow-sm">
-            <div className="card-body">
-              <h3 className="card-title">Task Management</h3>
-              <TaskManagement />
-            </div>
-          </div>
-        </section>
-
-        {/* Meeting Scheduler que ahora ocupa todo el ancho */}
-        <section className="col-12 mb-4">
-          <div className="card shadow-sm">
-            <div className="card-body">
-              <h3 className="card-title">Meeting Scheduler</h3>
-              <MeetingScheduler />
-            </div>
-          </div>
-        </section>
-
-        {/* Reports debajo de Meeting Scheduler */}
-        <section className="col-12 mb-4">
-          <div className="card shadow-sm">
-            <div className="card-body">
-              <h3 className="card-title">Reports</h3>
-              <Reports />
-            </div>
-          </div>
-        </section>
-      </div>
+    <div className="dashboard-layout">
+      <nav className="dashboard-sidebar">
+        <div className="sidebar-logo">⚡ SysCurringe</div>
+        <span className="sidebar-section-label">Panel Admin</span>
+        {Object.entries(sections).map(([key, { label, icon }]) => (
+          <button key={key} className={`sidebar-item ${activeSection === key ? 'active' : ''}`} onClick={() => setActiveSection(key)}>
+            <span>{icon}</span>{label}
+          </button>
+        ))}
+        <div style={{ flex: 1 }} />
+        <button className="sidebar-item danger" onClick={() => { logout(); navigate('/login'); }}>
+          🚪 Cerrar sesión
+        </button>
+      </nav>
+      <main className="dashboard-main">
+        <div className="page-header">
+          <h1 className="page-title">{sections[activeSection].label}</h1>
+          <p className="page-subtitle">Gestiona los {sections[activeSection].label.toLowerCase()} del sistema</p>
+        </div>
+        <div className="card-custom">
+          {sections[activeSection].component}
+        </div>
+      </main>
     </div>
   );
 }

@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.min.css";
 import useAdmin from "../hooks/useAdmin";
+import "../global.css";
 
 function EditMeeting() {
-  const { id } = useParams(); // Obtener el id de la reunión desde la URL
+  const { id } = useParams();
   const navigate = useNavigate();
-  const { getMeetingById, updateMeeting } = useAdmin(); // Hooks personalizados para manejar reuniones
-  const [meetingData, setMeetingData] = useState(null); // Estado para los datos de la reunión
-  const [loading, setLoading] = useState(true); // Estado de carga
+  const { getMeetingById, updateMeeting } = useAdmin();
+  const [meetingData, setMeetingData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Cargar datos de la reunión al montar el componente
   useEffect(() => {
     const fetchMeetingData = async () => {
       try {
@@ -31,7 +30,6 @@ function EditMeeting() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Confirmación antes de enviar los cambios
     const confirmation = window.confirm(
       "¿Estás seguro de que deseas modificar esta reunión?"
     );
@@ -40,7 +38,7 @@ function EditMeeting() {
       try {
         await updateMeeting(id, meetingData);
         console.log("Reunión actualizada con éxito");
-        navigate(-1); // Redirigir al listado de reuniones después de la actualización
+        navigate(-1);
       } catch (error) {
         console.error("Error al actualizar la reunión:", error);
         alert("Hubo un error al actualizar la reunión.");
@@ -51,76 +49,62 @@ function EditMeeting() {
   };
 
   if (!meetingData) {
-    // Mensaje de carga mientras se obtienen los datos
     return <div>Cargando datos de la reunión...</div>;
   }
 
   return (
-    <div className="container mt-4 d-flex justify-content-center">
-      <div
-        className="p-4 shadow-sm rounded-3 w-100"
-        style={{
-          maxWidth: "400px", // Ajuste del ancho máximo
-          backgroundColor: "#f8f9fa",
-          border: "1px solid #ddd",
-        }}
-      >
-        <h3 className="text-center mb-4">Editar Reunión</h3>
-        <form onSubmit={handleSubmit}>
-          {/* Nombre de la Reunión */}
-          <div className="mb-3">
-            <label className="form-label">Nombre de la Reunión</label>
-            <input
-              type="text"
-              className="form-control"
-              name="nombre_reunion"
-              value={meetingData.nombre_reunion || ""}
-              onChange={handleChange}
-              placeholder="Ingrese el nombre de la reunión"
-              required
-            />
-          </div>
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-page)' }}>
+      <div className="d-flex justify-content-center align-items-center min-h-screen p-4">
+        <div className="card-custom" style={{ maxWidth: '480px', margin: '40px auto' }}>
+          <h2 style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 6px' }}>Editar Reunión</h2>
+          <hr style={{ opacity: 0.1, margin: '0 0 24px' }} />
+          
+          <form onSubmit={handleSubmit}>
+            <div className="form-group-custom">
+              <label className="form-label-custom">Nombre de la Reunión</label>
+              <input
+                type="text"
+                className="form-control-custom"
+                name="nombre_reunion"
+                value={meetingData.nombre_reunion || ""}
+                onChange={handleChange}
+                placeholder="Ingrese el nombre de la reunión"
+                required
+              />
+            </div>
 
-          {/* Fecha de la Reunión */}
-          <div className="mb-3">
-            <label className="form-label">Fecha de la Reunión</label>
-            <input
-              type="date"
-              className="form-control"
-              name="fecha"
-              value={meetingData.fecha || ""}
-              onChange={handleChange}
-              required
-            />
-          </div>
+            <div className="form-group-custom">
+              <label className="form-label-custom">Fecha de la Reunión</label>
+              <input
+                type="date"
+                className="form-control-custom"
+                name="fecha"
+                value={meetingData.fecha || ""}
+                onChange={handleChange}
+                required
+              />
+            </div>
 
-          {/* Ubicación */}
-          <div className="mb-3">
-            <label className="form-label">Ubicación</label>
-            <input
-              type="text"
-              className="form-control"
-              name="ubicacion"
-              value={meetingData.ubicacion || ""}
-              onChange={handleChange}
-              placeholder="Ingrese la ubicación"
-            />
-          </div>
+            <div className="form-group-custom">
+              <label className="form-label-custom">Ubicación</label>
+              <input
+                type="text"
+                className="form-control-custom"
+                name="ubicacion"
+                value={meetingData.ubicacion || ""}
+                onChange={handleChange}
+                placeholder="Ingrese la ubicación"
+              />
+            </div>
 
-          {/* Botones */}
-          <div className="d-flex justify-content-between mt-4">
-            <button
-              type="button"
-              className="btn btn-secondary w-45"
-              onClick={() => navigate(-1)}
-            >
-              Cancelar
-            </button>
-            <button type="submit" className="btn btn-primary w-45">
+            <button type="submit" className="btn-primary-custom" style={{ width: '100%' }}>
               Guardar Cambios
             </button>
-          </div>
-        </form>
+            <button type="button" className="btn-secondary-custom" style={{ width: '100%', marginTop: '10px' }} onClick={() => navigate(-1)}>
+              Cancelar
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );
