@@ -140,14 +140,14 @@ const AddTaskForm = () => {
               <div className="form-group-custom">
                 <label className="form-label-custom">Seleccionar Usuario</label>
                 {loadingUsers ? (
-                  <div className="form-control-custom d-flex align-items-center" style={{ backgroundColor: '#f8f9fa' }}>
+                  <div className="alert-info-custom">
                     <div className="spinner-border spinner-border-sm me-2" role="status">
                       <span className="visually-hidden">Cargando...</span>
                     </div>
                     Cargando usuarios...
                   </div>
                 ) : filteredUsers.length === 0 ? (
-                  <div className="form-control-custom" style={{ backgroundColor: '#f8f9fa' }}>
+                  <div className="alert-info-custom">
                     No hay usuarios disponibles para este rol
                   </div>
                 ) : (

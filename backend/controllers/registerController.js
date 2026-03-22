@@ -31,7 +31,6 @@ const generateCode = async (req, res) => {
   const { email } = req.body; // Recibimos el correo del cuerpo de la solicitud.
   try {
     const { code, expirationTime } = generateVerificationCode();
-    console.log("el codigo generado es", code);
 
     await sendVerificationEmail(email, code);
 
@@ -109,21 +108,18 @@ const register = async (req, res) => {
   const { name, lastname, email, password, role, userType } = req.body;
 
   if (!name || !lastname || !email || !password || !role) {
-    return res
-      .status(400)
-      .json({ error: "Todos los campos son obligatorios." });
+    return res.status(400).json({ error: "Todos los campos son obligatorios." });
   }
-
-  const existingUser = await findByEmail(email);
-
-  if (existingUser) {
-    return res.status(400).json({ error: "Este correo ya está registrado." });
-  }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
 
   try {
-    const newUser = await createNewUser({
+    const existingUser = await findByEmail(email);
+    if (existingUser) {
+      return res.status(400).json({ error: "Este correo ya está registrado." });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await createNewUser({
       nombre: name,
       apellido: lastname,
       correo_electronico: email,
@@ -131,14 +127,11 @@ const register = async (req, res) => {
       rol: role,
       tipo_usuario: userType || null,
     });
-    return res.status(201).json({
-      message: "Registro exitoso. Redirigiendo...",
-    });
+
+    return res.status(201).json({ message: "Registro exitoso. Redirigiendo..." });
   } catch (error) {
     console.error("Error al registrar el usuario:", error);
-    return res.status(500).json({
-      error: "Hubo un error al registrar al usuario. Inténtalo de nuevo.",
-    });
+    return res.status(500).json({ error: "Hubo un error al registrar al usuario. Inténtalo de nuevo." });
   }
 };
 

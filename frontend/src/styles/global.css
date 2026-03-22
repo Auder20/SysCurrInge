@@ -59,6 +59,7 @@ body { background: var(--bg-page); color: var(--text-primary); font-family: var(
 /* Badges de estado */
 .badge-pendiente { background: #FEF3C7; color: #92400E; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; white-space: nowrap; }
 .badge-en_progreso { background: #DBEAFE; color: #1E40AF; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; white-space: nowrap; }
+.badge-en-progreso { background: #DBEAFE; color: #1E40AF; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; white-space: nowrap; }
 .badge-completada { background: #D1FAE5; color: #065F46; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; white-space: nowrap; }
 .badge-role-administrador { background: #EDE9FE; color: #5B21B6; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; }
 .badge-role-coordinador { background: #DBEAFE; color: #1E40AF; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; }

@@ -114,11 +114,11 @@ const AddMeetingForm = ({ onClose }) => {
             <div className="form-group-custom">
               <label className="form-label-custom">Organizador</label>
               {currentUser ? (
-                <div className="form-control-custom" style={{ backgroundColor: '#f8f9fa' }}>
+                <div className="alert-info-custom">
                   Usuario ID: {currentUser.id} (Rol: {currentUser.role})
                 </div>
               ) : (
-                <div className="form-control-custom" style={{ backgroundColor: '#f8f9fa' }}>
+                <div className="alert-info-custom">
                   Cargando información del usuario...
                 </div>
               )}

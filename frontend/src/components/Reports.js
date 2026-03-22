@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
+import "../global.css";
 import api from "../services/api";
 
 function Reports() {
@@ -183,7 +183,7 @@ function Reports() {
     <div className="p-3">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h3 className="mb-0">Reportes del Sistema</h3>
-        <button onClick={handleRefreshReports} className="btn btn-outline-primary">
+        <button onClick={handleRefreshReports} className="btn-secondary-custom">
           Actualizar Reportes
         </button>
       </div>
@@ -250,7 +250,8 @@ function Reports() {
                       <div className="mt-auto">
                         <button
                           onClick={() => handleExportCSV(report)}
-                          className="btn btn-success btn-sm w-100"
+                          className="btn-primary-custom"
+                          style={{ width: '100%' }}
                         >
                           Exportar CSV
                         </button>

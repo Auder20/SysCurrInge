@@ -106,10 +106,25 @@ async function deleteMeeting(id) {
   }
 }
 
+// Función para obtener reuniones por ID de usuario
+async function getMeetingsByUserId(id_usuario) {
+  try {
+    const meetings = await Meeting.findAll({
+      where: { id_usuario },
+      order: [['fecha', 'ASC']],
+    });
+    return meetings;
+  } catch (error) {
+    console.error("Error al obtener reuniones por usuario:", error);
+    throw error;
+  }
+}
+
 module.exports = {
   createNewMeeting,
   getAllMeetings,
   getMeetingById,
   updateMeeting,
   deleteMeeting,
+  getMeetingsByUserId,
 };

@@ -20,6 +20,6 @@ module.exports = (req, res, next) => {
     next(); // Pasa al siguiente middleware o controlador
   } catch (error) {
     console.error("Token inválido:", error);
-    return res.status(403).json({ error: "Token inválido o expirado" }); // Código 403 para acceso prohibido
+    return res.status(401).json({ error: "Token inválido o expirado" }); // Código 401 para no autorizado
   }
 };

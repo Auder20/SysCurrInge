@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import "../global.css";
 
 //redaccion de actas
 const WriteProcedings = () => {
@@ -67,32 +68,32 @@ const WriteProcedings = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Redacción de Acta</h1>
+    <div className="container mx-auto p-4" style={{ backgroundColor: 'var(--bg-page)' }}>
+      <h1 className="page-title mb-4">Redacción de Acta</h1>
 
-      <div className="mb-4 border p-4 rounded">
-        <h2 className="text-xl font-semibold">Información General</h2>
+      <div className="card-custom mb-4">
+        <h2 className="card-title">Información General</h2>
         <input
           name="titulo"
           value={acta.titulo}
           onChange={(e) => handleInputChange(e)}
           placeholder="Título del Acta"
-          className="mb-2 border p-2 w-full"
+          className="form-control-custom"
         />
-        <div className="flex gap-2 mb-2">
+        <div className="d-flex gap-2 mb-2">
           <input
             type="date"
             name="fecha"
             value={acta.fecha}
             onChange={(e) => handleInputChange(e)}
-            className="border p-2 w-full"
+            className="form-control-custom"
           />
           <input
             type="time"
             name="hora"
             value={acta.hora}
             onChange={(e) => handleInputChange(e)}
-            className="border p-2 w-full"
+            className="form-control-custom"
           />
         </div>
         <textarea
@@ -102,12 +103,12 @@ const WriteProcedings = () => {
             setActa({ ...acta, asistentes: e.target.value.split(", ") })
           }
           placeholder="Asistentes (separados por coma)"
-          className="border p-2 w-full"
+          className="form-control-custom"
         />
       </div>
 
-      <div className="mb-4 border p-4 rounded">
-        <h2 className="text-xl font-semibold">Temas Tratados</h2>
+      <div className="card-custom mb-4">
+        <h2 className="card-title">Temas Tratados</h2>
         {acta.temas.map((tema, index) => (
           <div key={index} className="mb-4 p-2 border rounded">
             <input
@@ -115,25 +116,25 @@ const WriteProcedings = () => {
               value={tema.tema}
               onChange={(e) => handleInputChange(e, index, "temas")}
               placeholder="Tema"
-              className="mb-2 border p-2 w-full"
+              className="form-control-custom"
             />
             <input
               name="responsable"
               value={tema.responsable}
               onChange={(e) => handleInputChange(e, index, "temas")}
               placeholder="Responsable"
-              className="mb-2 border p-2 w-full"
+              className="form-control-custom"
             />
             <textarea
               name="comentarios"
               value={tema.comentarios}
               onChange={(e) => handleInputChange(e, index, "temas")}
               placeholder="Comentarios"
-              className="mb-2 border p-2 w-full"
+              className="form-control-custom"
             />
             <button
               onClick={() => removeItem(index, "temas")}
-              className="bg-red-500 text-white p-2 rounded"
+              className="btn-danger-custom"
             >
               Eliminar Tema
             </button>
@@ -141,25 +142,25 @@ const WriteProcedings = () => {
         ))}
         <button
           onClick={() => addItem("temas")}
-          className="bg-blue-500 text-white p-2 rounded"
+          className="btn-primary-custom"
         >
           Agregar Tema
         </button>
       </div>
 
-      <div className="mb-4 border p-4 rounded">
-        <h2 className="text-xl font-semibold">Decisiones y Acuerdos</h2>
+      <div className="card-custom mb-4">
+        <h2 className="card-title">Decisiones y Acuerdos</h2>
         <textarea
           name="decisiones"
           value={acta.decisiones}
           onChange={(e) => handleInputChange(e)}
           placeholder="Decisiones y acuerdos alcanzados"
-          className="border p-2 w-full"
+          className="form-control-custom"
         />
       </div>
 
-      <div className="mb-4 border p-4 rounded">
-        <h2 className="text-xl font-semibold">Tareas Asignadas</h2>
+      <div className="card-custom mb-4">
+        <h2 className="card-title">Tareas Asignadas</h2>
         {acta.tareas.map((tarea, index) => (
           <div key={index} className="mb-4 p-2 border rounded">
             <input
@@ -167,25 +168,25 @@ const WriteProcedings = () => {
               value={tarea.descripcion}
               onChange={(e) => handleInputChange(e, index, "tareas")}
               placeholder="Descripción de la tarea"
-              className="mb-2 border p-2 w-full"
+              className="form-control-custom"
             />
             <input
               name="responsable"
               value={tarea.responsable}
               onChange={(e) => handleInputChange(e, index, "tareas")}
               placeholder="Responsable"
-              className="mb-2 border p-2 w-full"
+              className="form-control-custom"
             />
             <input
               type="date"
               name="fechaVencimiento"
               value={tarea.fechaVencimiento}
               onChange={(e) => handleInputChange(e, index, "tareas")}
-              className="mb-2 border p-2 w-full"
+              className="form-control-custom"
             />
             <button
               onClick={() => removeItem(index, "tareas")}
-              className="bg-red-500 text-white p-2 rounded"
+              className="btn-danger-custom"
             >
               Eliminar Tarea
             </button>
@@ -193,31 +194,31 @@ const WriteProcedings = () => {
         ))}
         <button
           onClick={() => addItem("tareas")}
-          className="bg-blue-500 text-white p-2 rounded"
+          className="btn-primary-custom"
         >
           Agregar Tarea
         </button>
       </div>
 
-      <div className="flex justify-end gap-2 mb-4">
+      <div className="d-flex justify-content-end gap-2 mb-4">
         <button
           onClick={() => handleSubmit("guardar")}
-          className="bg-green-500 text-white p-2 rounded"
+          className="btn-primary-custom"
         >
           Guardar Acta
         </button>
         <button
           onClick={() => handleSubmit("enviar")}
-          className="bg-yellow-500 text-white p-2 rounded"
+          className="btn-warning-custom"
         >
           Enviar para Aprobación
         </button>
-        <button className="border p-2 rounded">Cancelar</button>
+        <button className="btn-secondary-custom">Cancelar</button>
       </div>
 
-      {error && <div className="text-red-500">{error}</div>}
+      {error && <div className="alert-error">{error}</div>}
 
-      {successMessage && <div className="text-green-500">{successMessage}</div>}
+      {successMessage && <div className="alert-success">{successMessage}</div>}
     </div>
   );
 };

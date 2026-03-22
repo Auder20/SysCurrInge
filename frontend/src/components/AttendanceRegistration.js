@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "../global.css";
 
 //asistencia reunion
 const AttendanceRegistration = ({
@@ -30,37 +31,26 @@ const AttendanceRegistration = ({
       >
         Registro de Asistencia
       </h1>
-      <div style={{ marginBottom: "20px" }}>
+      <div className="toolbar" style={{ marginBottom: "20px" }}>
         <button
           onClick={() => console.log("Marcar todos presentes")}
-          style={{ marginRight: "10px" }}
+          className="btn-secondary-custom"
         >
           Marcar todos presentes
         </button>
-        <button onClick={() => console.log("Marcar todos ausentes")}>
+        <button onClick={() => console.log("Marcar todos ausentes")} className="btn-secondary-custom">
           Marcar todos ausentes
         </button>
       </div>
-      <ul style={{ listStyleType: "none", padding: 0 }}>
+      <ul className="list-unstyled" style={{ padding: 0 }}>
         {asistentes.length > 0 ? (
           asistentes.map((asistente) => (
             <li
               key={asistente.id}
-              style={{
-                background: "#f9f9f9",
-                padding: "15px",
-                marginBottom: "10px",
-                borderRadius: "5px",
-              }}
+              className="card-custom mb-3"
             >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <span style={{ fontWeight: "bold" }}>{asistente.nombre}</span>
+              <div className="d-flex justify-content-between align-items-center">
+                <span className="fw-bold">{asistente.nombre}</span>
                 <div>
                   <label>
                     <input
@@ -69,11 +59,11 @@ const AttendanceRegistration = ({
                       value="presente"
                       checked={asistente.estadoAsistencia === "presente"}
                       onChange={() => console.log("Cambiar a presente")}
-                      style={{ marginRight: "5px" }}
+                      className="form-control-custom"
                     />
                     Presente
                   </label>
-                  <label style={{ marginLeft: "15px" }}>
+                  <label className="ml-3">
                     <input
                       type="radio"
                       name={`asistencia-${asistente.id}`}
@@ -91,6 +81,7 @@ const AttendanceRegistration = ({
                       value="justificado"
                       checked={asistente.estadoAsistencia === "justificado"}
                       onChange={() => console.log("Cambiar a justificado")}
+                      className="form-control-custom"
                       style={{ marginRight: "5px" }}
                     />
                     Justificado
@@ -104,22 +95,15 @@ const AttendanceRegistration = ({
         )}
       </ul>
 
-      {error && <div style={{ color: "red", marginTop: "20px" }}>{error}</div>}
+      {error && <div className="alert-error" style={{ marginTop: "20px" }}>{error}</div>}
       {success && (
-        <div style={{ color: "green", marginTop: "20px" }}>{success}</div>
+        <div className="alert-success" style={{ marginTop: "20px" }}>{success}</div>
       )}
 
       <div style={{ marginTop: "20px" }}>
         <button
           onClick={() => console.log("Guardar asistencia")}
-          style={{
-            backgroundColor: "#007bff",
-            color: "#fff",
-            border: "none",
-            padding: "10px 20px",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
+          className="btn-primary-custom"
         >
           Guardar Asistencia
         </button>

@@ -13,14 +13,13 @@ const {
   findUserByIdAndRole,
   findUserById,
 } = require("../models/User");
-const { createNewMeeting, getAllMeetings, deleteMeeting, getMeetingById, updateMeetingData } = require("../models/Meeting");
+const { createNewMeeting, getAllMeetings, deleteMeeting, getMeetingById, updateMeeting: updateMeetingData } = require("../models/Meeting");
 const { saveAgendaItems, getAgendaByMeetingId } = require("../models/Agenda");
 
 const getUsers = async (req, res) => {
   try {
     const users = await getAllUsers();
     res.json(users);
-    console.log("usuarios obtenidos correctamente");
   } catch (error) {
     console.log("Error al obtener los usuarios", error);
     res.status(500).json({ error: "Error al obtener usuarios" });
@@ -31,7 +30,6 @@ const loadTasks = async (req, res) => {
   try {
     const tasks = await getAllTasks(); // Obtiene las tareas
     res.json(tasks); // Devuelve las tareas en formato JSON
-    console.log("Tareas obtenidas correctamente");
   } catch (error) {
     console.log("Error al obtener las tareas", error);
     res.status(500).json({ error: "Error al obtener tareas" });
@@ -46,7 +44,6 @@ const getUserById = async (req, res) => {
       return res.status(404).json({ error: "Usuario no encontrado" });
     }
     res.json(user);
-    console.log("Usuario obtenido correctamente");
   } catch (error) {
     console.error("Error al obtener el usuario", error);
     res.status(500).json({ error: "Error al obtener usuario" });
@@ -61,7 +58,6 @@ const getTaskById = async (req, res) => {
       return res.status(404).json({ error: "Tarea no encontrado" });
     }
     res.json(task);
-    console.log("Tarea obtenida correctamente");
   } catch (error) {
     console.error("Error al obtener la tarea", error);
     res.status(500).json({ error: "Error al obtener la tarea" });
@@ -148,17 +144,9 @@ const deleteTask = async (req, res) => {
 };
 
 const addTask = async (req, res) => {
-  console.log("Si entro en el controlador");
-
   // Recibe el objeto tarea directamente desde el cuerpo de la solicitud
   const tarea = req.body;
   const { rolSeleccionado, id_usuario } = tarea; // Extraemos rol y id_usuario del objeto tarea
-  console.log(
-    "el rol es: ",
-    rolSeleccionado,
-    "el id del usuario es: ",
-    id_usuario
-  );
 
   // Verificamos si los datos de rol y id_usuario están presentes
   if (!rolSeleccionado || !id_usuario) {
@@ -177,7 +165,12 @@ const addTask = async (req, res) => {
     }
 
     // Crear la nueva tarea
-    const result = await createNewTask(tarea);
+    const result = await createNewTask({
+      descripcion: tarea.descripcion,
+      fecha_vencimiento: tarea.fecha_vencimiento,
+      estado: tarea.estado || 'pendiente',
+      id_usuario: tarea.id_usuario,
+    });
     if (!result) {
       return res.status(500).json({ message: "Error al crear la tarea." });
     }
@@ -195,19 +188,9 @@ const addTask = async (req, res) => {
 };
 
 const addMeeting = async (req, res) => {
-  console.log("Si entro en el controlador para agregar reunión");
-
   // Recibe el objeto de la reunión directamente desde el cuerpo de la solicitud
   const meeting = req.body;
   const { nombre_reunion, fecha, id_usuario } = meeting; // Extraemos los campos necesarios del objeto reunión
-  console.log(
-    "Nombre de la reunión: ",
-    nombre_reunion,
-    "Fecha: ",
-    fecha,
-    "ID del organizador: ",
-    id_usuario
-  );
 
   // Verificamos si los datos esenciales están presentes
   if (!nombre_reunion || !fecha || !id_usuario) {
@@ -245,7 +228,6 @@ const getMeetings = async (req, res) => {
   try {
     const meetings = await getAllMeetings();
     res.json(meetings);
-    console.log("Reuniones obtenidas correctamente");
   } catch (error) {
     console.log("Error al obtener las reuniones", error);
     res.status(500).json({ error: "Error al obtener reuniones" });
@@ -299,7 +281,6 @@ const getAgendaByMeeting = async (req, res) => {
   try {
     const agendaItems = await getAgendaByMeetingId(parseInt(id_reunion));
     res.json(agendaItems);
-    console.log("Agenda obtenida correctamente");
   } catch (error) {
     console.log("Error al obtener la agenda", error);
     res.status(500).json({ error: "Error al obtener agenda" });
@@ -316,7 +297,6 @@ const getMeetingByIdController = async (req, res) => {
     }
     
     res.json(meeting);
-    console.log("Reunión obtenida correctamente");
   } catch (error) {
     console.error("Error al obtener la reunión:", error);
     res.status(500).json({ error: "Error al obtener reunión" });
@@ -337,7 +317,6 @@ const updateMeeting = async (req, res) => {
       message: "Reunión actualizada correctamente",
       meeting: updatedMeeting
     });
-    console.log("Reunión actualizada correctamente");
   } catch (error) {
     console.error("Error al actualizar la reunión:", error);
     res.status(500).json({ error: "Error al actualizar reunión" });
