@@ -1,8 +1,8 @@
-module.exports = (req, res, next) => {
-  // Verificar que el usuario existe y tiene rol de administrador
-  if (!req.user || req.user.role !== 'administrador') {
+module.exports = (allowedRoles = ['administrador']) => (req, res, next) => {
+  // Verificar que el usuario existe y tiene rol permitido
+  if (!req.user || !allowedRoles.includes(req.user.role)) {
     return res.status(403).json({ 
-      error: "Acceso denegado: Se requiere rol de administrador" 
+      error: `Acceso denegado: Se requiere uno de estos roles: ${allowedRoles.join(', ')}` 
     });
   }
   

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Card, InputGroup, FormControl } from "react-bootstrap";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import useAdmin from "../hooks/useAdmin";
+import { jwtDecode } from "jwt-decode";
+import useCoordinator from "../hooks/useCoordinator";
 
 function TaskManagement() {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ function TaskManagement() {
   const [currentPage, setCurrentPage] = useState(1); // Página actual
   const [tasksPerPage] = useState(6); // Número de tareas por página
   const [searchQuery, setSearchQuery] = useState(""); // Query de búsqueda
-  const { loadAllTasks, deleteTask } = useAdmin();
+  const { loadAllTasks, deleteTask } = useCoordinator();
 
   useEffect(() => {
     const loadTasks = async () => {

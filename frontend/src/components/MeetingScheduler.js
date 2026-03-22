@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Card, InputGroup, FormControl } from "react-bootstrap";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import useAdmin from "../hooks/useAdmin";
+import useCoordinator from "../hooks/useCoordinator";
 
 function MeetingScheduler() {
   const navigate = useNavigate();
@@ -12,7 +12,7 @@ function MeetingScheduler() {
   const [currentPage, setCurrentPage] = useState(1); // Página actual
   const [meetingsPerPage] = useState(6); // Número de reuniones por página
   const [searchQuery, setSearchQuery] = useState(""); // Query de búsqueda
-  const { loadAllMeetings, deleteMeeting } = useAdmin(); // Hooks personalizados
+  const { loadAllMeetings, deleteMeeting } = useCoordinator(); // Hooks personalizados
 
   useEffect(() => {
     const loadMeetings = async () => {

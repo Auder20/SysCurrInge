@@ -4,6 +4,7 @@ const authRoute = require("./routes/authRoute");
 const registerRoute = require("./routes/registerRoute");
 const adminRoute = require("./routes/adminRoute");
 const userRoute = require("./routes/userRoute");
+const coordinatorRoute = require("./routes/coordinatorRoute");
 const app = express();
 const PORT = process.env.PORT || 5001;
 
@@ -23,6 +24,7 @@ app.use("/api/auth", authRoute);
 app.use("/api/register", registerRoute);
 app.use("/api/admin", adminRoute);
 app.use("/api/user", userRoute);
+app.use("/api/coordinator", coordinatorRoute);
 
 // Ruta básica para la raíz
 app.get('/', (req, res) => {

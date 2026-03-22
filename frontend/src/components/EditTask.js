@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import useAdmin from "../hooks/useAdmin";
+import { jwtDecode } from "jwt-decode";
 
 function EditTask() {
   const { id } = useParams(); // Obtener el id de la tarea desde la URL
@@ -9,6 +10,8 @@ function EditTask() {
   const { getTaskById, updateTask } = useAdmin(); // Hooks personalizados para manejar tareas
 
   const [taskData, setTaskData] = useState(null); // Estado para los datos de la tarea
+  const [users, setUsers] = useState([]); // Estado para la lista de usuarios
+  const [loadingUsers, setLoadingUsers] = useState(false); // Estado de carga de usuarios
 
   // Cargar datos de la tarea al montar el componente
   useEffect(() => {

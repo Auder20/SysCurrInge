@@ -33,7 +33,9 @@ const AddTaskForm = () => {
   }, [loadAllUsers]);
 
   // Filtrar usuarios por rol seleccionado
-  const filteredUsers = users.filter(user => user.rol === rolSeleccionado);
+  const filteredUsers = users.filter(user => 
+    user.rol === rolSeleccionado || user.tipo_usuario === rolSeleccionado
+  );
 
   // Resetear usuarioId cuando cambia el rol seleccionado
   useEffect(() => {
@@ -57,8 +59,8 @@ const AddTaskForm = () => {
       descripcion,
       fecha_vencimiento: fechaVencimiento,
       estado,
-      id_usuario: usuarioId,
-      rolSeleccionado,
+      id_usuario: parseInt(usuarioId),
+      rol: rolSeleccionado, // Enviar el rol del usuario seleccionado
     };
 
     try {
@@ -138,12 +140,9 @@ const AddTaskForm = () => {
                 required
               >
                 <option value="">Selecciona un rol</option>
+                <option value="administrador">Administrador</option>
                 <option value="coordinador">Coordinador</option>
-                <option value="miembro">Miembro</option>
-                <option value="invitado">Invitado</option>
-                <option value="jefe de departamento">
-                  Jefe de Departamento
-                </option>
+                <option value="participante">Participante</option>
               </Form.Control>
             </Form.Group>
 

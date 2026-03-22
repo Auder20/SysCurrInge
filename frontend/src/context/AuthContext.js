@@ -11,7 +11,7 @@ async function fetchUser(setUser, setLoading) {
       const response = await api.get("/auth/me", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setUser(response.data);
+      setUser(response.data.user);
     } catch (error) {
       console.error("Error al obtener el usuario:", error);
       localStorage.removeItem("token");

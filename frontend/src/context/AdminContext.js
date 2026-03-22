@@ -140,6 +140,27 @@ export const AdminProvider = ({ children }) => {
     }
   }
 
+  async function getMeetingById(id) {
+    try {
+      const response = await api.get(`/admin/loadMeetingById?id=${id}`);
+      return response.data;
+    } catch (error) {
+      console.error("Error al obtener la reunión:", error);
+      return null;
+    }
+  }
+
+  async function updateMeeting(id, meetingData) {
+    try {
+      const response = await api.put(`/admin/updateMeeting?id=${id}`, meetingData);
+      console.log("Reunión actualizada con éxito:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error al actualizar la reunión:", error);
+      throw error;
+    }
+  }
+
   async function saveAgenda(id_reunion, agendaItems) {
     try {
       const response = await api.post(`/admin/saveAgenda/${id_reunion}`, {
@@ -180,6 +201,8 @@ export const AdminProvider = ({ children }) => {
         deleteMeeting,
         saveAgenda,
         getAgendaByMeeting,
+        getMeetingById,
+        updateMeeting,
       }}
     >
       {children}

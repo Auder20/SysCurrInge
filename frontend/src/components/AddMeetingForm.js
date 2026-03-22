@@ -1,15 +1,50 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Form, Container, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import useAdmin from "../hooks/useAdmin"; // Asumimos que tienes un hook similar a useAdmin
+import useAdmin from "../hooks/useAdmin";
+import { jwtDecode } from "jwt-decode"; // Asumimos que tienes un hook similar a useAdmin
 
 const AddMeetingForm = ({ onClose }) => {
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
   const [location, setLocation] = useState("");
   const [userId, setUserId] = useState(""); // ID del organizador
+  const [users, setUsers] = useState([]); // Lista de usuarios
+  const [loadingUsers, setLoadingUsers] = useState(false); // Estado de carga de usuarios
   const navigate = useNavigate();
   const { addMeeting } = useAdmin(); // Asumimos que tienes un hook similar a useAdmin con la función addMeeting
+  const { loadAllUsers } = useAdmin(); // Para cargar la lista de usuarios
+
+  // Auto-rellenar con el usuario actual
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        setUserId(String(decoded.id_usuario));
+      } catch (error) {
+        console.error('Error al decodificar token:', error);
+      }
+    }
+  }, []);
+
+  // Cargar usuarios para el dropdown
+  useEffect(() => {
+    const loadUsers = async () => {
+      try {
+        setLoadingUsers(true);
+        const usersData = await loadAllUsers();
+        setUsers(usersData || []);
+      } catch (error) {
+        console.error('Error al cargar usuarios:', error);
+        setUsers([]);
+      } finally {
+        setLoadingUsers(false);
+      }
+    };
+
+    loadUsers();
+  }, [loadAllUsers]);
 
   // Manejo del envío del formulario
   const handleSubmit = async (e) => {
@@ -99,14 +134,33 @@ const AddMeetingForm = ({ onClose }) => {
             </Form.Group>
 
             <Form.Group controlId="formUserId" className="mt-3">
-              <Form.Label>ID del Organizador</Form.Label>
-              <Form.Control
-                type="number"
-                placeholder="Ingrese el ID del organizador"
-                value={userId}
-                onChange={(e) => setUserId(e.target.value)}
-                required
-              />
+              <Form.Label>Organizador</Form.Label>
+              {loadingUsers ? (
+                <Form.Control>
+                  <div className="spinner-border spinner-border-sm me-2" role="status">
+                    <span className="visually-hidden">Cargando usuarios...</span>
+                  </div>
+                  Cargando usuarios...
+                </Form.Control>
+              ) : users.length === 0 ? (
+                <Form.Control>
+                  No hay usuarios disponibles
+                </Form.Control>
+              ) : (
+                <Form.Control
+                  as="select"
+                  value={userId}
+                  onChange={(e) => setUserId(e.target.value)}
+                  required
+                >
+                  <option value="">Selecciona un usuario</option>
+                  {users.map((user) => (
+                    <option key={user.id_usuario} value={user.id_usuario}>
+                      {user.nombre} {user.apellido} ({user.correo_electronico})
+                    </option>
+                  ))}
+                </Form.Control>
+              )}
             </Form.Group>
 
             <div className="d-flex justify-content-between mt-4">

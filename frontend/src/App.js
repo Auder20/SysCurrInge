@@ -29,6 +29,7 @@ import EditUser from "./components/EditUser";
 import AddTaskForm from "./components/AddTaskForm";
 import EditTask from "./components/EditTask";
 import AddMeetingForm from "./components/AddMeetingForm";
+import EditMeeting from "./components/EditMeeting";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 const App = () => {
@@ -181,6 +182,14 @@ const App = () => {
                 element={
                   <ProtectedRoute allowedRoles={['administrador']}>
                     <EditTask />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/editMeeting/:id" 
+                element={
+                  <ProtectedRoute allowedRoles={['administrador']}>
+                    <EditMeeting />
                   </ProtectedRoute>
                 } 
               />

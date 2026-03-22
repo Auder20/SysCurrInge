@@ -13,7 +13,7 @@ const {
   findUserByIdAndRole,
   findUserById,
 } = require("../models/User");
-const { createNewMeeting, getAllMeetings, deleteMeeting } = require("../models/Meeting");
+const { createNewMeeting, getAllMeetings, deleteMeeting, getMeetingById, updateMeetingData } = require("../models/Meeting");
 const { saveAgendaItems, getAgendaByMeetingId } = require("../models/Agenda");
 
 const getUsers = async (req, res) => {
@@ -306,6 +306,44 @@ const getAgendaByMeeting = async (req, res) => {
   }
 };
 
+const getMeetingByIdController = async (req, res) => {
+  const { id } = req.query;
+
+  try {
+    const meeting = await getMeetingById(id);
+    if (!meeting) {
+      return res.status(404).json({ error: "Reunión no encontrada." });
+    }
+    
+    res.json(meeting);
+    console.log("Reunión obtenida correctamente");
+  } catch (error) {
+    console.error("Error al obtener la reunión:", error);
+    res.status(500).json({ error: "Error al obtener reunión" });
+  }
+};
+
+const updateMeeting = async (req, res) => {
+  const { id } = req.query;
+  const meetingData = req.body;
+
+  try {
+    const updatedMeeting = await updateMeetingData(id, meetingData);
+    if (!updatedMeeting) {
+      return res.status(404).json({ error: "Reunión no encontrada." });
+    }
+    
+    res.json({
+      message: "Reunión actualizada correctamente",
+      meeting: updatedMeeting
+    });
+    console.log("Reunión actualizada correctamente");
+  } catch (error) {
+    console.error("Error al actualizar la reunión:", error);
+    res.status(500).json({ error: "Error al actualizar reunión" });
+  }
+};
+
 module.exports = {
   getUsers,
   getUserById,
@@ -321,4 +359,6 @@ module.exports = {
   deleteMeetingById,
   saveAgenda,
   getAgendaByMeeting,
+  getMeetingById: getMeetingByIdController,
+  updateMeeting,
 };
