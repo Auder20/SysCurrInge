@@ -19,6 +19,31 @@ function Login() {
     navigate("/register");
   }
 
+  // Función para determinar la ruta según el rol y tipo de usuario
+  function getRouteByRole(role, type_user) {
+    if (role === "administrador") {
+      return "/adminDashBoard";
+    }
+    
+    if (role === "coordinador" && type_user === "moderador") {
+      return "/coordinatorDashBoard";
+    }
+    
+    if (role === "coordinador" && type_user === "asistente") {
+      return "/dashBoard2";
+    }
+    
+    if (role === "participante" && type_user === "miembro") {
+      return "/memberDashBoard";
+    }
+    
+    if (role === "participante" && type_user === "invitado") {
+      return "/guestDashBoard";
+    }
+    
+    return null; // No hay ruta definida para esta combinación
+  }
+
   async function loginButton(e) {
     e.preventDefault();
     try {
@@ -27,35 +52,18 @@ function Login() {
         const token = response.token;
         localStorage.setItem("token", token);
         const decoded = jwtDecode(token);
-        if (decoded.role && decoded.role === "administrador") {
-          navigate("/adminDashBoard");
-        } else if (decoded.role && decoded.type_user) {
-          if (
-            decoded.role === "coordinador" &&
-            decoded.type_user === "moderador"
-          ) {
-            navigate("/cordinatorDashBoard");
-          } else if (
-            decoded.role === "coordinador" &&
-            decoded.type_user === "asistente"
-          ) {
-          } else if (
-            decoded.role === "participante" &&
-            decoded.type_user === "miembro"
-          ) {
-          } else if (
-            decoded.role === "participante" &&
-            decoded.type_user === "invitado"
-          ) {
-          } else {
-            console.error(
-              "El rol o el tipo de usuario no se encontró en el token decodificado"
-            );
-          }
+        
+        const route = getRouteByRole(decoded.role, decoded.type_user);
+        
+        if (route) {
+          navigate(route);
         } else {
-          console.error("El rol no se encontró en el token decodificado");
-          console.log(decoded.role);
-          console.log(decoded.type_user);
+          // Mostrar error claro al usuario en lugar de solo console.error
+          alert(`No se encontró una página para tu rol (${decoded.role}) y tipo de usuario (${decoded.type_user}). Por favor, contacta al administrador.`);
+          console.error("Rol o tipo de usuario no reconocido:", {
+            role: decoded.role,
+            type_user: decoded.type_user
+          });
         }
       }
     } catch (error) {

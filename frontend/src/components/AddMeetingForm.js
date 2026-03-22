@@ -34,7 +34,7 @@ const AddMeetingForm = ({ onClose }) => {
       const res = await addMeeting(newMeeting); // Esto llama a tu función que hace la petición al servidor
 
       // Comprobamos si la respuesta es exitosa
-      if (res && res.message === "Reunión agregada exitosamente") {
+      if (res && res.message) {
         // Limpiar los campos del formulario
         setTitle("");
         setDate("");

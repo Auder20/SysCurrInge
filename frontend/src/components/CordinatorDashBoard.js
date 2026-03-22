@@ -4,12 +4,14 @@ import TaskManagement from "./TaskManagement";
 import MeetingScheduler from "./MeetingScheduler";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 function CoordinatorDashboard() {
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   function handleLogout() {
-    alert("Sesión cerrada");
+    logout();
     navigate("/login");
   }
 

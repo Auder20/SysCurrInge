@@ -29,6 +29,7 @@ import EditUser from "./components/EditUser";
 import AddTaskForm from "./components/AddTaskForm";
 import EditTask from "./components/EditTask";
 import AddMeetingForm from "./components/AddMeetingForm";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const App = () => {
   return (
@@ -40,34 +41,157 @@ const App = () => {
               <Route path="/login" element={<Login />} />
               <Route path="/" element={<Navigate to="/login" />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/dashBoard" element={<DashBoard />} />
-              <Route path="/dashBoard2" element={<DashBoard2 />} />
-              <Route path="/adminDashBoard" element={<AdminDashboard />} />
-              <Route path="/userManagement" element={<UserManagement />} />
-              <Route path="/taskManagement" element={<TaskManagement />} />
-              <Route path="/meetingScheduler" element={<MeetingScheduler />} />
-              <Route path="/reports" element={<Reports />} />
-              <Route
-                path="/attendanceRegistration"
-                element={<AttendanceRegistration />}
-              />
-              <Route
-                path="/cordinatorDashBoard"
-                element={<CoordinatorDashboard />}
-              />
-              <Route path="/writeProcedings" element={<WriteProcedings />} />
-              <Route path="/meetingAgendas" element={<MeetingAgendas />} />
-              <Route
-                path="/meetingManagement"
-                element={<MeetingManagement />}
-              />
-              <Route path="/memberDashBoard" element={<MemberDashboard />} />
-              <Route path="/guestDashBoard" element={<GuestDashboard />} />
               <Route path="/verificationCode" element={<VerificationCode />} />
-              <Route path="/editUser/:id" element={<EditUser />} />
-              <Route path="/addTaskForm" element={<AddTaskForm />} />
-              <Route path="/editTask/:id" element={<EditTask />} />
-              <Route path="/addMeetingForm" element={<AddMeetingForm />} />
+              
+              {/* Rutas públicas que no requieren autenticación */}
+              
+              {/* Rutas protegidas por rol */}
+              <Route 
+                path="/dashBoard" 
+                element={
+                  <ProtectedRoute allowedRoles={['administrador']}>
+                    <DashBoard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/dashBoard2" 
+                element={
+                  <ProtectedRoute allowedRoles={['coordinador']}>
+                    <DashBoard2 />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/adminDashBoard" 
+                element={
+                  <ProtectedRoute allowedRoles={['administrador']}>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/userManagement" 
+                element={
+                  <ProtectedRoute allowedRoles={['administrador']}>
+                    <UserManagement />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/taskManagement" 
+                element={
+                  <ProtectedRoute allowedRoles={['administrador']}>
+                    <TaskManagement />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/meetingScheduler" 
+                element={
+                  <ProtectedRoute allowedRoles={['administrador']}>
+                    <MeetingScheduler />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/reports" 
+                element={
+                  <ProtectedRoute allowedRoles={['administrador']}>
+                    <Reports />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/coordinatorDashBoard" 
+                element={
+                  <ProtectedRoute allowedRoles={['coordinador']}>
+                    <CoordinatorDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/memberDashBoard" 
+                element={
+                  <ProtectedRoute allowedRoles={['participante']}>
+                    <MemberDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/guestDashBoard" 
+                element={
+                  <ProtectedRoute allowedRoles={['participante', 'invitado']}>
+                    <GuestDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              
+              {/* Rutas protegidas adicionales */}
+              <Route 
+                path="/attendanceRegistration" 
+                element={
+                  <ProtectedRoute allowedRoles={['administrador', 'coordinador']}>
+                    <AttendanceRegistration />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/writeProcedings" 
+                element={
+                  <ProtectedRoute allowedRoles={['coordinador']}>
+                    <WriteProcedings />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/meetingAgendas/:id_reunion?" 
+                element={
+                  <ProtectedRoute allowedRoles={['administrador', 'coordinador']}>
+                    <MeetingAgendas />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/meetingManagement" 
+                element={
+                  <ProtectedRoute allowedRoles={['administrador']}>
+                    <MeetingManagement />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/editUser/:id" 
+                element={
+                  <ProtectedRoute allowedRoles={['administrador']}>
+                    <EditUser />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/addTaskForm" 
+                element={
+                  <ProtectedRoute allowedRoles={['administrador']}>
+                    <AddTaskForm />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/editTask/:id" 
+                element={
+                  <ProtectedRoute allowedRoles={['administrador']}>
+                    <EditTask />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/addMeetingForm" 
+                element={
+                  <ProtectedRoute allowedRoles={['administrador']}>
+                    <AddMeetingForm />
+                  </ProtectedRoute>
+                } 
+              />
             </Routes>
           </Router>
         </AdminProvider>

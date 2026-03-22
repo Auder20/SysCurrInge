@@ -28,8 +28,8 @@ function createModelMeeting() {
         type: DataTypes.INTEGER,
         allowNull: true, // Puede ser null si no se asigna un usuario
         references: {
-          model: "Usuarios", // La tabla referenciada
-          key: "id_usuario", // La clave primaria de la tabla 'Usuarios'
+          model: "usuario", // La tabla referenciada (corregido de "Usuarios")
+          key: "id_usuario", // La clave primaria de la tabla 'usuario'
         },
         onDelete: "SET NULL", // Si el usuario es eliminado, se establece en NULL
       },

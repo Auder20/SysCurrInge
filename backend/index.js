@@ -3,11 +3,17 @@ const cors = require("cors");
 const authRoute = require("./routes/authRoute");
 const registerRoute = require("./routes/registerRoute");
 const adminRoute = require("./routes/adminRoute");
+const userRoute = require("./routes/userRoute");
 const app = express();
 const PORT = process.env.PORT || 5001;
 
 // Configuración de CORS
-app.use(cors());
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
 
 // Middleware para analizar cuerpos JSON
 app.use(express.json());
@@ -16,6 +22,7 @@ app.use(express.json());
 app.use("/api/auth", authRoute);
 app.use("/api/register", registerRoute);
 app.use("/api/admin", adminRoute);
+app.use("/api/user", userRoute);
 
 // Ruta básica para la raíz
 app.get('/', (req, res) => {

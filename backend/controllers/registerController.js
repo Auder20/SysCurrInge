@@ -11,8 +11,7 @@ const {
   createNewUser,
   existsAdminUser,
 } = require("../models/User");
-
-const verificationCodes = {};
+const VerificationCode = require("../models/VerificationCode");
 
 const validateAdminRole = async (req, res) => {
   try {
@@ -36,7 +35,12 @@ const generateCode = async (req, res) => {
 
     await sendVerificationEmail(email, code);
 
-    verificationCodes[email] = { code, expirationTime };
+    // Guardar o actualizar el código en la base de datos usando upsert
+    await VerificationCode.upsert({
+      email,
+      code,
+      expirationTime,
+    });
 
     res
       .status(200)
@@ -54,8 +58,10 @@ const verifyCode = async (req, res) => {
   const { email, code } = req.body; // Recibimos el correo y el código del cuerpo de la solicitud.
 
   try {
-    // Verificamos si el correo existe en los códigos de verificación almacenados.
-    const verificationData = verificationCodes[email];
+    // Buscar el código de verificación en la base de datos
+    const verificationData = await VerificationCode.findOne({
+      where: { email },
+    });
 
     if (!verificationData) {
       return res.status(400).json({
@@ -67,8 +73,10 @@ const verifyCode = async (req, res) => {
 
     // Verificamos si el código ha expirado
     if (Date.now() > expirationTime) {
-      // Si el código ha expirado, eliminamos el código almacenado
-      delete verificationCodes[email];
+      // Si el código ha expirado, eliminamos el registro de la base de datos
+      await VerificationCode.destroy({
+        where: { email },
+      });
       return res.status(400).json({
         error: "El código ha expirado. Solicita uno nuevo.",
       });
@@ -81,7 +89,11 @@ const verifyCode = async (req, res) => {
       });
     }
 
-    // Si todo está bien, respondemos con un mensaje de éxito
+    // Si todo está bien, eliminamos el registro y respondemos con un mensaje de éxito
+    await VerificationCode.destroy({
+      where: { email },
+    });
+
     return res.status(200).json({
       message: "Código de verificación correcto.",
     });

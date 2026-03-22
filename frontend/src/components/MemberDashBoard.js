@@ -3,11 +3,26 @@ import React from "react";
 import TaskList from "./TaskList";
 import MeetingList from "./MeetingList";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 function MemberDashboard() {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  function handleLogout() {
+    logout();
+    navigate("/login");
+  }
+
   return (
     <div className="container p-4">
-      <h1 className="text-center mb-4">Panel del Miembro</h1>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1 className="mb-0">Panel del Miembro</h1>
+        <button className="btn btn-danger" onClick={handleLogout}>
+          Cerrar sesión
+        </button>
+      </div>
 
       {/* Sección de tareas asignadas */}
       <section className="mb-5">

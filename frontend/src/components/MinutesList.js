@@ -3,47 +3,39 @@ import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function MinutesList() {
-  const [minutes, setMinutes] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulación de la carga de actas desde una API o base de datos
-    setMinutes([
-      {
-        id: 1,
-        title: "Acta de la Reunión General",
-        date: "2024-11-10",
-        link: "/actas/reunion-general",
-      },
-      {
-        id: 2,
-        title: "Acta de la Reunión de Evaluación",
-        date: "2024-11-15",
-        link: "/actas/reunion-evaluacion",
-      },
-    ]);
+    // Simular tiempo de carga
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
   }, []);
+
+  if (loading) {
+    return (
+      <div className="container p-4 text-center">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Cargando...</span>
+        </div>
+        <p className="mt-2">Cargando actas...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="container p-4">
       <h2 className="text-primary mb-4">Actas Disponibles</h2>
-      <ul className="list-group">
-        {minutes.map((minute) => (
-          <li key={minute.id} className="list-group-item">
-            <h5>{minute.title}</h5>
-            <p>
-              <strong>Fecha:</strong> {minute.date}
-            </p>
-            <a
-              href={minute.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-info"
-            >
-              Ver Acta
-            </a>
-          </li>
-        ))}
-      </ul>
+      <div className="alert alert-info text-center">
+        <h4 className="alert-heading">No hay actas disponibles</h4>
+        <p>Las actas de reuniones estarán disponibles próximamente.</p>
+        <hr />
+        <p className="mb-0">
+          Cuando se implemente el sistema de actas en el backend, podrás ver y descargar los documentos aquí.
+        </p>
+      </div>
     </div>
   );
 }

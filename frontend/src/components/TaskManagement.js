@@ -34,7 +34,6 @@ function TaskManagement() {
   function handleRegister() {
     navigate("/addTaskForm");
   }
-  function editTasks() {}
 
   // Función para editar tarea
   const editTask = (taskId) => {

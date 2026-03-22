@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Form, Container, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import useAdmin from "../hooks/useAdmin";
@@ -9,8 +9,36 @@ const AddTaskForm = () => {
   const [estado, setEstado] = useState("pendiente");
   const [rolSeleccionado, setRolSeleccionado] = useState(""); // Tipo de usuario seleccionado
   const [usuarioId, setUsuarioId] = useState(""); // ID del usuario
+  const [users, setUsers] = useState([]); // Lista de usuarios cargados
+  const [loadingUsers, setLoadingUsers] = useState(false);
   const navigate = useNavigate();
-  const { addTask } = useAdmin(); // Solo se necesita addTask, ya que no cargamos usuarios aquí
+  const { addTask, loadAllUsers } = useAdmin();
+
+  // Cargar usuarios cuando el componente se monte
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        setLoadingUsers(true);
+        const usersData = await loadAllUsers();
+        setUsers(usersData || []);
+      } catch (error) {
+        console.error("Error al cargar usuarios:", error);
+        setUsers([]);
+      } finally {
+        setLoadingUsers(false);
+      }
+    };
+
+    fetchUsers();
+  }, [loadAllUsers]);
+
+  // Filtrar usuarios por rol seleccionado
+  const filteredUsers = users.filter(user => user.rol === rolSeleccionado);
+
+  // Resetear usuarioId cuando cambia el rol seleccionado
+  useEffect(() => {
+    setUsuarioId("");
+  }, [rolSeleccionado]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -121,14 +149,33 @@ const AddTaskForm = () => {
 
             {rolSeleccionado && (
               <Form.Group controlId="formUsuarioId" className="mt-3">
-                <Form.Label>ID del Usuario</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Ingresa el ID del usuario"
-                  value={usuarioId}
-                  onChange={(e) => setUsuarioId(e.target.value)}
-                  required
-                />
+                <Form.Label>Seleccionar Usuario</Form.Label>
+                {loadingUsers ? (
+                  <Form.Control>
+                    <div className="spinner-border spinner-border-sm me-2" role="status">
+                      <span className="visually-hidden">Cargando...</span>
+                    </div>
+                    Cargando usuarios...
+                  </Form.Control>
+                ) : filteredUsers.length === 0 ? (
+                  <Form.Control>
+                    No hay usuarios disponibles para este rol
+                  </Form.Control>
+                ) : (
+                  <Form.Control
+                    as="select"
+                    value={usuarioId}
+                    onChange={(e) => setUsuarioId(e.target.value)}
+                    required
+                  >
+                    <option value="">Selecciona un usuario</option>
+                    {filteredUsers.map((user) => (
+                      <option key={user.id_usuario} value={user.id_usuario}>
+                        {user.nombre} {user.apellido} ({user.correo_electronico})
+                      </option>
+                    ))}
+                  </Form.Control>
+                )}
               </Form.Group>
             )}
 

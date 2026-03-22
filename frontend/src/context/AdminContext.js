@@ -119,6 +119,50 @@ export const AdminProvider = ({ children }) => {
     }
   }
 
+  async function loadAllMeetings() {
+    try {
+      const response = await api.get("/admin/loadMeetings");
+      return response.data;
+    } catch (error) {
+      console.error("Error al cargar todas las reuniones:", error);
+      return [];
+    }
+  }
+
+  async function deleteMeeting(id) {
+    try {
+      const response = await api.delete(`/admin/deleteMeeting/${id}`);
+      console.log("Reunión eliminada con éxito:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error al eliminar la reunión:", error);
+      throw error;
+    }
+  }
+
+  async function saveAgenda(id_reunion, agendaItems) {
+    try {
+      const response = await api.post(`/admin/saveAgenda/${id_reunion}`, {
+        agendaItems
+      });
+      console.log("Agenda guardada con éxito:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error al guardar la agenda:", error);
+      throw error;
+    }
+  }
+
+  async function getAgendaByMeeting(id_reunion) {
+    try {
+      const response = await api.get(`/admin/agenda/${id_reunion}`);
+      return response.data;
+    } catch (error) {
+      console.error("Error al obtener la agenda:", error);
+      return [];
+    }
+  }
+
   return (
     <AdminContext.Provider
       value={{
@@ -132,6 +176,10 @@ export const AdminProvider = ({ children }) => {
         getTaskById,
         updateTask,
         addMeeting,
+        loadAllMeetings,
+        deleteMeeting,
+        saveAgenda,
+        getAgendaByMeeting,
       }}
     >
       {children}

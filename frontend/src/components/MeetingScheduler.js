@@ -60,7 +60,7 @@ function MeetingScheduler() {
 
   // Filtrar reuniones por el query de búsqueda
   const filteredMeetings = meetings.filter((meeting) => {
-    return meeting.descripcion
+    return meeting.nombre_reunion
       .toLowerCase()
       .includes(searchQuery.toLowerCase());
   });
@@ -119,7 +119,7 @@ function MeetingScheduler() {
                 <div key={meeting.id_reunion} className="col">
                   <Card className="shadow-lg border-light rounded">
                     <Card.Body>
-                      <Card.Title>{meeting.descripcion}</Card.Title>
+                      <Card.Title>{meeting.nombre_reunion}</Card.Title>
                       <Card.Text>
                         <strong>Fecha:</strong> {meeting.fecha}
                       </Card.Text>

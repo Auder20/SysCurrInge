@@ -13,7 +13,8 @@ const {
   findUserByIdAndRole,
   findUserById,
 } = require("../models/User");
-const { createNewMeeting } = require("../models/Meeting");
+const { createNewMeeting, getAllMeetings, deleteMeeting } = require("../models/Meeting");
+const { saveAgendaItems, getAgendaByMeetingId } = require("../models/Agenda");
 
 const getUsers = async (req, res) => {
   try {
@@ -102,10 +103,10 @@ const updateTask = async (req, res) => {
       id_usuario,
     });
 
-    if (!updateTask) {
+    if (!updatedTask) {
       return res.status(404).json({ error: "Tarea no encontrado" });
     }
-    res.json({ message: "Tarea actualizada correctamente", updateUser });
+    res.json({ message: "Tarea actualizada correctamente", updatedTask });
   } catch (error) {
     console.error("Error al actualizar la Tarea:", error);
     res.status(500).json({ error: "Error al actualizar la Tarea" });
@@ -240,6 +241,71 @@ const addMeeting = async (req, res) => {
   }
 };
 
+const getMeetings = async (req, res) => {
+  try {
+    const meetings = await getAllMeetings();
+    res.json(meetings);
+    console.log("Reuniones obtenidas correctamente");
+  } catch (error) {
+    console.log("Error al obtener las reuniones", error);
+    res.status(500).json({ error: "Error al obtener reuniones" });
+  }
+};
+
+const deleteMeetingById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await deleteMeeting(id);
+    if (result === null) {
+      return res.status(404).json({ message: "Reunión no encontrada." });
+    }
+    return res.json(result);
+  } catch (error) {
+    console.error("Error al eliminar la reunión:", error);
+    return res
+      .status(500)
+      .json({ message: "Error interno al eliminar la reunión." });
+  }
+};
+
+const saveAgenda = async (req, res) => {
+  const { agendaItems } = req.body;
+  const { id_reunion } = req.params;
+
+  try {
+    // Agregar id_reunion a cada item de agenda
+    const agendaWithMeetingId = agendaItems.map(item => ({
+      ...item,
+      id_reunion: parseInt(id_reunion)
+    }));
+
+    const savedAgenda = await saveAgendaItems(agendaWithMeetingId);
+    res.status(201).json({
+      message: "Agenda guardada exitosamente",
+      agenda: savedAgenda
+    });
+  } catch (error) {
+    console.error("Error al guardar agenda:", error);
+    res.status(500).json({
+      error: "Error interno al guardar la agenda."
+    });
+  }
+};
+
+const getAgendaByMeeting = async (req, res) => {
+  const { id_reunion } = req.params;
+
+  try {
+    const agendaItems = await getAgendaByMeetingId(parseInt(id_reunion));
+    res.json(agendaItems);
+    console.log("Agenda obtenida correctamente");
+  } catch (error) {
+    console.log("Error al obtener la agenda", error);
+    res.status(500).json({ error: "Error al obtener agenda" });
+  }
+};
+
 module.exports = {
   getUsers,
   getUserById,
@@ -251,4 +317,8 @@ module.exports = {
   getTaskById,
   updateTask,
   addMeeting,
+  getMeetings,
+  deleteMeetingById,
+  saveAgenda,
+  getAgendaByMeeting,
 };
