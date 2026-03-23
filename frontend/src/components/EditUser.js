@@ -12,10 +12,12 @@ function EditUser() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
+        console.log("🔍 EditUser: Cargando usuario con ID:", id);
         const user = await getUserById(id);
+        console.log("✅ EditUser: Usuario recibido:", user);
         setUserData(user);
       } catch (error) {
-        console.error("Error al cargar el usuario:", error);
+        console.error("❌ Error al cargar el usuario:", error);
       }
     };
 
@@ -29,19 +31,23 @@ function EditUser() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    console.log("🔍 EditUser: Intentando actualizar usuario:", userData);
+
     const confirmation = window.confirm(
       "¿Estás seguro de que deseas modificar este usuario?"
     );
 
     if (confirmation) {
       try {
-        await updateUser(id, userData);
+        console.log("📤 EditUser: Enviando datos:", userData);
+        const result = await updateUser(id, userData);
+        console.log("✅ EditUser: Usuario actualizado:", result);
         navigate(-1);
       } catch (error) {
-        console.error("Error al actualizar el usuario:", error);
+        console.error("❌ Error al actualizar el usuario:", error);
       }
     } else {
-      console.log("Actualización cancelada");
+      console.log("❌ Actualización cancelada");
     }
   };
 
