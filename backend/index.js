@@ -177,8 +177,13 @@ async function runAutoSeed() {
   try {
     logger.info('🗄️ Ejecutando seed automática en producción...');
     
-    // Importar modelos
+    // Importar modelos y sequelize
+    const sequelize = require('./config/database');
     const { User, Task, Meeting } = require('./models');
+    
+    // Sincronizar todas las tablas (crear si no existen)
+    await sequelize.sync({ force: false, alter: true });
+    logger.info('✅ Tablas sincronizadas');
     
     // Verificar si ya existe el admin
     const adminExists = await User.findOne({ 
