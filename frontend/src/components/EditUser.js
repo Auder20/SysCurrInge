@@ -3,7 +3,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import useAdmin from "../hooks/useAdmin";
 
 function EditUser() {
+  console.log("🚀 EditUser: Componente montado!");
   const { id } = useParams();
+  console.log("🔍 EditUser: ID del parámetro:", id);
   const navigate = useNavigate();
   const { getUserById, updateUser } = useAdmin();
 
