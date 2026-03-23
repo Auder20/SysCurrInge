@@ -68,9 +68,15 @@ const verifyLimiter = rateLimit({
 
 // Configuración de CORS
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || "https://sys-curringe.vercel.app",
+  origin: [
+    process.env.FRONTEND_URL || "https://sys-curringe.vercel.app",
+    "http://localhost:3000",  // Para desarrollo local
+    "http://localhost:3001"   // Para desarrollo local
+  ],
   credentials: true,
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 };
 app.use(cors(corsOptions));
 
