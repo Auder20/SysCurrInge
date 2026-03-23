@@ -93,6 +93,7 @@ app.get('/health', healthCheck);
 app.get('/ready', readinessCheck);
 app.get('/debug', async (req, res) => {
   try {
+    const sequelize = require('./config/database');
     const { User, Task, Meeting } = require('./models');
     const userCount = await User.count();
     const taskCount = await Task.count();
