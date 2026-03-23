@@ -26,6 +26,7 @@ import MemberDashboard from "./components/MemberDashBoard";
 import GuestDashboard from "./components/GuestDashBoard";
 import VerificationCode from "./components/VerificationCode";
 import EditUser from "./components/EditUser";
+import EditUserSimple from "./components/EditUserSimple";
 import AddTaskForm from "./components/AddTaskForm";
 import EditTask from "./components/EditTask";
 import AddMeetingForm from "./components/AddMeetingForm";
@@ -64,7 +65,7 @@ const App = () => {
                 {/* Rutas para editar */}
                 <Route path="/editTask/:id" element={<EditTask />} />
                 <Route path="/editMeeting/:id" element={<EditMeeting />} />
-                <Route path="/edit-user/:id" element={<EditUser />} />
+                <Route path="/edit-user/:id" element={<EditUserSimple />} />
                 
                 {/* Rutas de coordinador */}
                 <Route path="/coordinator" element={<CoordinatorDashboard />} />
