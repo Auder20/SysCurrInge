@@ -11,7 +11,6 @@ import DashBoard from "./components/DashBoard";
 import Register from "./components/Register";
 import DashBoard2 from "./components/DashBoard2";
 import AttendanceRegistration from "./components/AttendanceRegistration";
-import WriteProcedings from "./components/WriteProcedings";
 import MeetingAgendas from "./components/MeetingAgendas";
 import MeetingManagement from "./components/MeetingManagement";
 import { RegisterProvider } from "./context/RegisterContext";
@@ -69,7 +68,6 @@ const App = () => {
                 
                 {/* Rutas de asistencia */}
                 <Route path="/attendance" element={<AttendanceRegistration />} />
-                <Route path="/proceedings" element={<WriteProcedures />} />
                 
                 {/* Rutas de edición */}
                 <Route path="/edit-user/:id" element={<EditUser />} />
