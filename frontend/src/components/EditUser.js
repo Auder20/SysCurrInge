@@ -8,13 +8,20 @@ function EditUser() {
   console.log("🔍 EditUser: ID del parámetro:", id);
   const navigate = useNavigate();
   const { getUserById, updateUser } = useAdmin();
+  
+  console.log("🔧 EditUser: Funciones disponibles:", { getUserById: !!getUserById, updateUser: !!updateUser });
 
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
+    console.log("🔄 EditUser: useEffect ejecutado");
     const fetchUserData = async () => {
       try {
         console.log("🔍 EditUser: Cargando usuario con ID:", id);
+        if (!getUserById) {
+          console.error("❌ EditUser: getUserById no está disponible!");
+          return;
+        }
         const user = await getUserById(id);
         console.log("✅ EditUser: Usuario recibido:", user);
         setUserData(user);
