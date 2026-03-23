@@ -22,7 +22,10 @@ const sequelize = new Sequelize(
       idle: 10000
     },
     dialectOptions: {
-      ssl: {
+      ssl: process.env.DB_HOST?.includes('render.com') ? {
+        require: true,
+        rejectUnauthorized: false
+      } : {
         require: true,
         rejectUnauthorized: false
       }
