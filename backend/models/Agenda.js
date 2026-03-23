@@ -1,56 +1,47 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 
-// Definimos el modelo de Agenda
-function createModelAgenda() {
-  return sequelize.define(
-    "Agenda",
-    {
-      id_agenda: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-        allowNull: false,
-      },
-      id_reunion: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          model: "reunion",
-          key: "id_reunion",
-        },
-        onDelete: "CASCADE",
-      },
-      titulo: {
-        type: DataTypes.STRING(200),
-        allowNull: false,
-      },
-      descripcion: {
-        type: DataTypes.TEXT,
-        allowNull: true,
-      },
-      responsable: {
-        type: DataTypes.STRING(100),
-        allowNull: true,
-      },
-      tiempo: {
-        type: DataTypes.INTEGER, // Tiempo en minutos
-        allowNull: true,
-      },
-      estado: {
-        type: DataTypes.STRING(50),
-        allowNull: false,
-        defaultValue: "pendiente",
-      },
+// Modelo de Agenda
+const Agenda = sequelize.define(
+  "Agenda",
+  {
+    id_agenda: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
     },
-    {
-      tableName: "agenda",
-      timestamps: true,
-    }
-  );
-}
-
-const Agenda = createModelAgenda();
+    id_reunion: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    titulo: {
+      type: DataTypes.STRING(200),
+      allowNull: false,
+    },
+    descripcion: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    responsable: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
+    },
+    tiempo: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    estado: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
+      defaultValue: 'pendiente',
+    },
+  },
+  {
+    tableName: "agenda",
+    timestamps: true,
+  }
+);
 
 // Función para crear un nuevo item de agenda
 async function createAgendaItem(agendaData) {
@@ -133,11 +124,4 @@ async function deleteAgendaItem(id_agenda) {
   }
 }
 
-module.exports = {
-  createAgendaItem,
-  getAgendaByMeetingId,
-  saveAgendaItems,
-  deleteAgendaByMeetingId,
-  updateAgendaItem,
-  deleteAgendaItem,
-};
+module.exports = Agenda;
