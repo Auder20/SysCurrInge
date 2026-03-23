@@ -73,13 +73,20 @@ const corsOptions = {
       process.env.FRONTEND_URL || "https://sys-curringe.vercel.app",
       "http://localhost:3000",
       "http://localhost:3001",
-      "https://sys-curringe.vercel.app"
+      "https://sys-curringe.vercel.app",
+      "https://sys-curringe.vercel.app/", // con slash final
+      "https://sys-curringe.vercel.app" // duplicado por si acaso
     ];
+    
+    console.log('🔍 CORS Debug - Origin:', origin);
+    console.log('🔍 CORS Debug - Allowed:', allowedOrigins);
     
     // Permitir sin origen (como apps móviles) o si está en la lista
     if (!origin || allowedOrigins.includes(origin)) {
+      console.log('✅ CORS Permitido para:', origin);
       callback(null, true);
     } else {
+      console.log('❌ CORS Bloqueado para:', origin);
       callback(new Error('No permitido por CORS'));
     }
   },
