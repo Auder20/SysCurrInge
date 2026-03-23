@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import "../global.css";
 
 //redaccion de actas
 const WriteProcedings = () => {

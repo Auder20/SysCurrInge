@@ -5,7 +5,6 @@ import MeetingScheduler from "./MeetingScheduler";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { CoordinatorProvider } from "../context/CoordinatorContext";
-import "../global.css";
 
 function CoordinatorDashboard() {
   const [activeSection, setActiveSection] = useState("tasks");

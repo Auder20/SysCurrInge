@@ -6,7 +6,6 @@ import UserManagement from "./UserManagement";
 import TaskManagement from "./TaskManagement";
 import MeetingScheduler from "./MeetingScheduler";
 import Reports from "./Reports";
-import "../global.css";
 
 function AdminDashboard() {
   const [activeSection, setActiveSection] = useState("users");

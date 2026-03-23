@@ -1,136 +1,204 @@
-import React from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
+import api from "../services/api";
 
-const Dashboard = ({ userRole }) => {
-  const styles = {
-    container: {
-      marginTop: "2rem",
-    },
-    cardHeader: {
-      backgroundColor: "#007bff",
-      color: "#fff",
-      textAlign: "center",
-      padding: "1rem",
-      borderRadius: "0.25rem 0.25rem 0 0",
-    },
-    sectionHeader: {
-      marginBottom: "1rem",
-      fontWeight: "bold",
-    },
-    listItem: {
-      border: "1px solid #ddd",
-      borderRadius: "0.25rem",
-      marginBottom: "0.5rem",
-      padding: "0.75rem",
-    },
-  };
+const Dashboard2 = () => {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+  const [tasks, setTasks] = useState([]);
+  const [meetings, setMeetings] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [tareasRes, reunionesRes] = await Promise.all([
+          api.get("/user/myTasks"),
+          api.get("/user/myMeetings"),
+        ]);
+        setTasks(tareasRes.data || []);
+        setMeetings(reunionesRes.data || []);
+      } catch (error) {
+        console.error("Error al cargar datos:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  function handleLogout() {
+    logout();
+    navigate("/login");
+  }
+
+  const pendientes = tasks.filter((t) => t.estado === "pendiente").length;
+  const enProgreso = tasks.filter((t) => t.estado === "en_progreso").length;
+  const completadas = tasks.filter((t) => t.estado === "completada").length;
 
   return (
-    <div className="container" style={styles.container}>
-      <div className="card shadow-sm">
-        <div className="card-header" style={styles.cardHeader}>
-          <h1>Bienvenido al Dashboard</h1>
+    <div className="dashboard-layout">
+      {/* Sidebar */}
+      <nav className="dashboard-sidebar">
+        <div className="sidebar-logo">⚡ SysCurringe</div>
+        <span className="sidebar-section-label">Coordinador Asistente</span>
+        <span className="sidebar-item active">📋 Mi Panel</span>
+        <div style={{ flex: 1 }} />
+        <button className="sidebar-item danger" onClick={handleLogout}>
+          🚪 Cerrar sesión
+        </button>
+      </nav>
+
+      {/* Main content */}
+      <main className="dashboard-main">
+        <div className="page-header">
+          <h1 className="page-title">Panel de Asistente</h1>
+          <p className="page-subtitle">
+            Resumen de tus tareas y reuniones asignadas
+          </p>
         </div>
-        <div className="card-body">
-          {/* Funcionalidades comunes a todos los usuarios */}
-          <div className="common-features mb-4">
-            <h2 style={styles.sectionHeader} className="text-secondary">
-              Funcionalidades Comunes
-            </h2>
-            <ul className="list-group">
-              <li className="list-group-item" style={styles.listItem}>
-                Ver reuniones programadas
-              </li>
-              <li className="list-group-item" style={styles.listItem}>
-                Consultar actas
-              </li>
-              <li className="list-group-item" style={styles.listItem}>
-                Actualizar perfil
-              </li>
-            </ul>
+
+        {loading ? (
+          <div className="loading-wrap">
+            <div className="spinner-border text-primary" role="status" />
+            <span>Cargando tu información...</span>
           </div>
-
-          {/* Secciones específicas de acuerdo al rol */}
-          {userRole === "administrador" && (
-            <div className="role-section mb-4">
-              <h3 className="text-danger" style={styles.sectionHeader}>
-                Sección de Administrador
-              </h3>
-              <ul className="list-group">
-                <li className="list-group-item" style={styles.listItem}>
-                  Gestión de usuarios
-                </li>
-                <li className="list-group-item" style={styles.listItem}>
-                  Configuración avanzada
-                </li>
-              </ul>
+        ) : (
+          <>
+            {/* Stats */}
+            <div className="stats-grid" style={{ marginBottom: "24px" }}>
+              <div className="stat-card">
+                <div className="stat-value">{tasks.length}</div>
+                <div className="stat-label">Tareas totales</div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-value" style={{ color: "var(--warning)" }}>
+                  {pendientes}
+                </div>
+                <div className="stat-label">Pendientes</div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-value" style={{ color: "var(--info, #0284C7)" }}>
+                  {enProgreso}
+                </div>
+                <div className="stat-label">En progreso</div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-value" style={{ color: "var(--success)" }}>
+                  {completadas}
+                </div>
+                <div className="stat-label">Completadas</div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-value">{meetings.length}</div>
+                <div className="stat-label">Reuniones</div>
+              </div>
             </div>
-          )}
 
-          {userRole === "coordinador" && (
-            <div className="role-section mb-4">
-              <h3 className="text-warning" style={styles.sectionHeader}>
-                Sección de Coordinador
-              </h3>
-              <ul className="list-group">
-                <li className="list-group-item" style={styles.listItem}>
-                  Planificar reuniones
-                </li>
-                <li className="list-group-item" style={styles.listItem}>
-                  Asignar tareas
-                </li>
-              </ul>
-            </div>
-          )}
+            {/* Tareas */}
+            <div className="card-custom" style={{ marginBottom: "24px" }}>
+              <h2
+                style={{
+                  fontSize: "18px",
+                  fontWeight: 600,
+                  color: "var(--text-primary)",
+                  marginBottom: "16px",
+                }}
+              >
+                ✅ Tareas Asignadas
+              </h2>
 
-          {userRole === "miembro" && (
-            <div className="role-section mb-4">
-              <h3 className="text-info" style={styles.sectionHeader}>
-                Sección de Miembro
-              </h3>
-              <ul className="list-group">
-                <li className="list-group-item" style={styles.listItem}>
-                  Participar en reuniones
-                </li>
-                <li className="list-group-item" style={styles.listItem}>
-                  Ver actas y detalles de reuniones
-                </li>
-              </ul>
+              {tasks.length === 0 ? (
+                <div className="alert-info-custom">
+                  No tienes tareas asignadas por el momento.
+                </div>
+              ) : (
+                <div style={{ overflowX: "auto" }}>
+                  <table className="table-custom">
+                    <thead>
+                      <tr>
+                        <th>Descripción</th>
+                        <th>Vencimiento</th>
+                        <th>Estado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {tasks.map((task) => (
+                        <tr key={task.id_tarea}>
+                          <td>{task.descripcion}</td>
+                          <td style={{ color: "var(--text-secondary)", whiteSpace: "nowrap" }}>
+                            {task.fecha_vencimiento
+                              ? new Date(task.fecha_vencimiento).toLocaleDateString("es-CO")
+                              : "—"}
+                          </td>
+                          <td>
+                            <span className={`badge-${task.estado}`}>
+                              {task.estado?.replace("_", " ")}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
-          )}
 
-          {userRole === "invitado" && (
-            <div className="role-section mb-4">
-              <h3 className="text-muted" style={styles.sectionHeader}>
-                Sección de Invitado
-              </h3>
-              <ul className="list-group">
-                <li className="list-group-item" style={styles.listItem}>
-                  Acceso limitado a reuniones públicas
-                </li>
-              </ul>
-            </div>
-          )}
+            {/* Reuniones */}
+            <div className="card-custom">
+              <h2
+                style={{
+                  fontSize: "18px",
+                  fontWeight: 600,
+                  color: "var(--text-primary)",
+                  marginBottom: "16px",
+                }}
+              >
+                📅 Reuniones Programadas
+              </h2>
 
-          {userRole === "jefe de departamento" && (
-            <div className="role-section mb-4">
-              <h3 className="text-success" style={styles.sectionHeader}>
-                Sección de Jefe de Departamento
-              </h3>
-              <ul className="list-group">
-                <li className="list-group-item" style={styles.listItem}>
-                  Supervisión de reuniones
-                </li>
-                <li className="list-group-item" style={styles.listItem}>
-                  Revisión de actas y decisiones clave
-                </li>
-              </ul>
+              {meetings.length === 0 ? (
+                <div className="alert-info-custom">
+                  No tienes reuniones programadas por el momento.
+                </div>
+              ) : (
+                <div style={{ overflowX: "auto" }}>
+                  <table className="table-custom">
+                    <thead>
+                      <tr>
+                        <th>Nombre</th>
+                        <th>Fecha</th>
+                        <th>Ubicación</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {meetings.map((meeting) => (
+                        <tr key={meeting.id_reunion}>
+                          <td style={{ fontWeight: 500 }}>
+                            {meeting.nombre_reunion}
+                          </td>
+                          <td style={{ color: "var(--text-secondary)", whiteSpace: "nowrap" }}>
+                            {meeting.fecha
+                              ? new Date(meeting.fecha).toLocaleDateString("es-CO")
+                              : "—"}
+                          </td>
+                          <td style={{ color: "var(--text-secondary)" }}>
+                            {meeting.ubicacion || "Sin especificar"}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
-          )}
-        </div>
-      </div>
+          </>
+        )}
+      </main>
     </div>
   );
 };
 
-export default Dashboard;
+export default Dashboard2;

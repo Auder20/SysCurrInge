@@ -68,6 +68,11 @@ const updateUser = async (req, res) => {
   const { id } = req.query;
   const { nombre, apellido, correo_electronico, estado, rol } = req.body;
 
+  const rolesPermitidos = ['administrador', 'coordinador', 'participante'];
+  if (rol && !rolesPermitidos.includes(rol)) {
+    return res.status(400).json({ error: "El rol especificado no es válido." });
+  }
+
   try {
     const updatedUser = await updateUserData(id, {
       nombre,
@@ -265,6 +270,11 @@ const deleteMeetingById = async (req, res) => {
 const saveAgenda = async (req, res) => {
   const { agendaItems } = req.body;
   const { id_reunion } = req.params;
+
+  // Validar que agendaItems existe y es un array
+  if (!agendaItems || !Array.isArray(agendaItems) || agendaItems.length === 0) {
+    return res.status(400).json({ error: "Se requiere un array de items de agenda no vacío." });
+  }
 
   try {
     // Agregar id_reunion a cada item de agenda

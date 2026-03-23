@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { jwtDecode } from "jwt-decode";
 import useCoordinator from "../hooks/useCoordinator";
-import "../global.css";
 
 function TaskManagement() {
   const navigate = useNavigate();

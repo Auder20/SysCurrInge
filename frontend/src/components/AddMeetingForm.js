@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import useAdmin from "../hooks/useAdmin";
 import useCoordinator from "../hooks/useCoordinator";
 import { jwtDecode } from "jwt-decode";
-import "../global.css";
 
 const AddMeetingForm = ({ onClose }) => {
   const [title, setTitle] = useState("");

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import useCoordinator from "../hooks/useCoordinator";
-import "../global.css";
 
 function MeetingScheduler() {
   const navigate = useNavigate();

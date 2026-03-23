@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useAdmin from "../hooks/useAdmin";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import "../global.css";
 
 function UserManagement() {
   const navigate = useNavigate();

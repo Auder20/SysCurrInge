@@ -4,7 +4,6 @@ import TaskList from "./TaskList";
 import MeetingList from "./MeetingList";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
-import "../global.css";
 
 function MemberDashboard() {
   const [activeSection, setActiveSection] = useState("tasks");

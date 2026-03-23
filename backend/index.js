@@ -31,6 +31,12 @@ const codeLimiter = rateLimit({
   message: { error: 'Demasiadas solicitudes de código. Intenta en 1 hora.' },
 });
 
+const verifyLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos (mismo que la expiración del código)
+  max: 5, // máx 5 intentos de verificación por IP
+  message: { error: 'Demasiados intentos de verificación. Solicita un nuevo código.' },
+});
+
 // Configuración de CORS
 const corsOptions = {
   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
@@ -45,6 +51,7 @@ app.use(express.json());
 // Aplicar rate limiters a rutas específicas
 app.use('/api/auth/login', loginLimiter);
 app.use('/api/register/send-verification-code', codeLimiter);
+app.use('/api/register/verify-code', verifyLimiter);
 
 // Rutas
 app.use("/api/auth", authRoute);

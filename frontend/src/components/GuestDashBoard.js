@@ -4,7 +4,6 @@ import MeetingList from "./MeetingList";
 import MinutesList from "./MinutesList";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
-import "../global.css";
 
 function GuestDashboard() {
   const [activeSection, setActiveSection] = useState("meetings");
