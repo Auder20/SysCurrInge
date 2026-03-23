@@ -1,23 +1,22 @@
 const { Sequelize } = require('sequelize');
 const sequelize = require('../config/database');
 
-// Importar modelos
+// Importar modelos - ya están definidos, solo los exportamos
 const User = require('./User');
 const Task = require('./Task');
 const Meeting = require('./Meeting');
 const Agenda = require('./Agenda');
 const VerificationCode = require('./VerificationCode');
 
-// Inicializar modelos
+// Setup associations (si existen)
 const models = {
-  User: User(sequelize, Sequelize.DataTypes),
-  Task: Task(sequelize, Sequelize.DataTypes),
-  Meeting: Meeting(sequelize, Sequelize.DataTypes),
-  Agenda: Agenda(sequelize, Sequelize.DataTypes),
-  VerificationCode: VerificationCode(sequelize, Sequelize.DataTypes)
+  User,
+  Task,
+  Meeting,
+  Agenda,
+  VerificationCode
 };
 
-// Setup associations
 Object.keys(models).forEach(modelName => {
   if (models[modelName].associate) {
     models[modelName].associate(models);
