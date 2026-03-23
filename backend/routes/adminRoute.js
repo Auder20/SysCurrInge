@@ -31,5 +31,6 @@ router.post("/addTask", addTask);
 router.post("/addMeeting", addMeeting);
 router.get("/loadTasks", loadTasks);
 router.get("/loadTaskById", getTaskById);
+router.get("/loadMeetings", getMeetings);
 
 module.exports = router;
