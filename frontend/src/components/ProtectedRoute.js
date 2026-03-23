@@ -38,18 +38,18 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
       // Usuario autenticado pero sin el rol correcto
       // Redirigir a su dashboard correspondiente
       const roleToRoute = {
-        'administrador': '/adminDashBoard',
-        'coordinador': '/coordinatorDashBoard',
-        'participante': '/memberDashBoard', // Default para participantes
-        'invitado': '/guestDashBoard'
+        'administrador': '/admin',  // Corregido
+        'coordinador': '/coordinator',  // Corregido
+        'participante': '/member', // Default para participantes
+        'invitado': '/guest'  // Corregido
       };
 
       // Si es participante, verificar el tipo_usuario para mayor precisión
       if (userRole === 'participante' && decoded.type_user) {
         if (decoded.type_user === 'invitado') {
-          return <Navigate to="/guestDashBoard" replace />;
+          return <Navigate to="/guest" replace />;  // Corregido
         } else if (decoded.type_user === 'miembro') {
-          return <Navigate to="/memberDashBoard" replace />;
+          return <Navigate to="/member" replace />;  // Corregido
         }
       }
 

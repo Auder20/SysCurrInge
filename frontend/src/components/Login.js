@@ -22,23 +22,23 @@ function Login() {
   // Función para determinar la ruta según el rol y tipo de usuario
   function getRouteByRole(role, type_user) {
     if (role === "administrador") {
-      return "/adminDashBoard";
+      return "/admin";  // Corregido: /adminDashBoard → /admin
     }
     
     if (role === "coordinador" && type_user === "moderador") {
-      return "/coordinatorDashBoard";
+      return "/coordinator";  // Corregido: /coordinatorDashBoard → /coordinator
     }
     
     if (role === "coordinador" && type_user === "asistente") {
-      return "/dashBoard2";
+      return "/dashboard2";  // Corregido: /dashBoard2 → /dashboard2
     }
     
     if (role === "participante" && type_user === "miembro") {
-      return "/memberDashBoard";
+      return "/member";  // Corregido: /memberDashBoard → /member
     }
     
     if (role === "participante" && type_user === "invitado") {
-      return "/guestDashBoard";
+      return "/guest";  // Corregido: /guestDashBoard → /guest
     }
     
     return null; // No hay ruta definida para esta combinación
