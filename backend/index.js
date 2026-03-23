@@ -67,17 +67,26 @@ const verifyLimiter = rateLimit({
 
 // Configuración de CORS
 const corsOptions = {
-  origin: [
-    process.env.FRONTEND_URL || "https://sys-curringe.vercel.app",
-    "http://localhost:3000",  // Para desarrollo local
-    "http://localhost:3001"   // Para desarrollo local
-  ],
+  origin: function (origin, callback) {
+    // Permitir orígenes específicos
+    const allowedOrigins = [
+      process.env.FRONTEND_URL || "https://sys-curringe.vercel.app",
+      "http://localhost:3000",
+      "http://localhost:3001",
+      "https://sys-curringe.vercel.app"
+    ];
+    
+    // Permitir sin origen (como apps móviles) o si está en la lista
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('No permitido por CORS'));
+    }
+  },
   credentials: true,
-  optionsSuccessStatus: 200,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  preflightContinue: false,
-  optionsSuccessStatus: 204
+  optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions));
 
