@@ -204,7 +204,8 @@ const MeetingAgendas = () => {
         </div>
         <button
           onClick={modoEdicion ? actualizarTema : agregarTema}
-          className="btn btn-primary mt-4"
+          className="btn-primary-custom"
+          style={{ marginTop: '16px' }}
           disabled={loading}
         >
           {modoEdicion ? "Actualizar Tema" : "Agregar Tema"}
@@ -235,14 +236,14 @@ const MeetingAgendas = () => {
               <div className="d-flex gap-2 mt-2">
                 <button
                   onClick={() => editarTema(index)}
-                  className="btn btn-warning btn-sm"
+                  className="btn-warning-custom"
                   disabled={loading}
                 >
                   Editar
                 </button>
                 <button
                   onClick={() => eliminarTema(index)}
-                  className="btn btn-danger btn-sm"
+                  className="btn-danger-custom"
                   disabled={loading}
                 >
                   Eliminar
@@ -255,7 +256,8 @@ const MeetingAgendas = () => {
 
       {agenda.length > 0 && (
         <button
-          className="btn btn-success mt-4"
+          className="btn-primary-custom"
+          style={{ marginTop: '16px' }}
           onClick={guardarAgenda}
           disabled={loading}
         >

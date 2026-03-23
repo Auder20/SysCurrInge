@@ -531,6 +531,19 @@ body {
   width: 100%;
 }
 
+/* Navbar link custom */
+.nav-link-custom { 
+  color: rgba(255,255,255,0.65); 
+  text-decoration: none; 
+  padding: 8px 12px; 
+  border-radius: var(--radius-sm); 
+  transition: color var(--transition); 
+}
+
+.nav-link-custom:hover { 
+  color: #fff; 
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .admin-sidebar {

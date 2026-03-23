@@ -111,6 +111,23 @@ const register = async (req, res) => {
     return res.status(400).json({ error: "Todos los campos son obligatorios." });
   }
 
+  // Validar formato de email
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ error: "El formato del correo electrónico no es válido." });
+  }
+
+  // Validar longitud mínima de contraseña
+  if (password.length < 8) {
+    return res.status(400).json({ error: "La contraseña debe tener al menos 8 caracteres." });
+  }
+
+  // Validar que el rol sea uno de los permitidos
+  const rolesPermitidos = ['administrador', 'coordinador', 'participante'];
+  if (!rolesPermitidos.includes(role)) {
+    return res.status(400).json({ error: "El rol especificado no es válido." });
+  }
+
   try {
     const existingUser = await findByEmail(email);
     if (existingUser) {

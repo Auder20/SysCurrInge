@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import "../global.css";
+import api from "../services/api";
 
 // Componente Navbar simplificado
 const Navbar = () => (
@@ -11,29 +11,19 @@ const Navbar = () => (
     <div className="collapse navbar-collapse">
       <ul className="navbar-nav" style={{ display: 'flex', gap: '24px', margin: 0, padding: 0, listStyle: 'none' }}>
         <li className="nav-item">
-          <Link className="nav-link" style={{ color: 'rgba(255,255,255,0.65)', textDecoration: 'none', padding: '8px 12px', borderRadius: 'var(--radius-sm)', transition: 'all var(--transition)' }} to="/" onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = 'rgba(255,255,255,0.65)'} >
-            Inicio
-          </Link>
+          <Link className="nav-link-custom" to="/">Inicio</Link>
         </li>
         <li className="nav-item">
-          <Link className="nav-link" style={{ color: 'rgba(255,255,255,0.65)', textDecoration: 'none', padding: '8px 12px', borderRadius: 'var(--radius-sm)', transition: 'all var(--transition)' }} to="/reuniones" onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = 'rgba(255,255,255,0.65)'} >
-            Reuniones
-          </Link>
+          <Link className="nav-link-custom" to="/reuniones">Reuniones</Link>
         </li>
         <li className="nav-item">
-          <Link className="nav-link" style={{ color: 'rgba(255,255,255,0.65)', textDecoration: 'none', padding: '8px 12px', borderRadius: 'var(--radius-sm)', transition: 'all var(--transition)' }} to="/actas" onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = 'rgba(255,255,255,0.65)'} >
-            Actas
-          </Link>
+          <Link className="nav-link-custom" to="/actas">Actas</Link>
         </li>
         <li className="nav-item">
-          <Link className="nav-link" style={{ color: 'rgba(255,255,255,0.65)', textDecoration: 'none', padding: '8px 12px', borderRadius: 'var(--radius-sm)', transition: 'all var(--transition)' }} to="/tareas" onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = 'rgba(255,255,255,0.65)'} >
-            Tareas
-          </Link>
+          <Link className="nav-link-custom" to="/tareas">Tareas</Link>
         </li>
         <li className="nav-item">
-          <Link className="nav-link" style={{ color: 'rgba(255,255,255,0.65)', textDecoration: 'none', padding: '8px 12px', borderRadius: 'var(--radius-sm)', transition: 'all var(--transition)' }} to="/repositorio" onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = 'rgba(255,255,255,0.65)'} >
-            Repositorio
-          </Link>
+          <Link className="nav-link-custom" to="/repositorio">Repositorio</Link>
         </li>
       </ul>
     </div>
@@ -47,7 +37,7 @@ const ProximasReuniones = ({ reuniones }) => (
     <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
       {reuniones.map((union, index) => (
         <li key={index} style={{ padding: '12px 16px', borderBottom: index < reuniones.length - 1 ? `1px solid var(--border)` : 'none', color: 'var(--text-primary)' }}>
-          {union.fecha} - {union.tema}
+          {union.fecha} - {union.nombre_reunion || union.tema}
         </li>
       ))}
     </ul>
@@ -61,7 +51,7 @@ const TareasPendientes = ({ tareas }) => (
     <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
       {tareas.map((tarea, index) => (
         <li key={index} style={{ padding: '12px 16px', borderBottom: index < tareas.length - 1 ? `1px solid var(--border)` : 'none', color: 'var(--text-primary)' }}>
-          {tarea.descripcion} - Vence: {tarea.fechaLimite}
+          {tarea.descripcion} - Vence: {formatDate(tarea.fecha_vencimiento)}
         </li>
       ))}
     </ul>
@@ -102,23 +92,51 @@ const BuscadorRapido = () => {
   );
 };
 
-// Componente principal Dashboard simplificado
+// Componente principal Dashboard
 const Dashboard = () => {
-  // Datos de ejemplo
-  const reuniones = [
-    { fecha: "2024-09-22", tema: "Reunión de planificación" },
-    { fecha: "2024-09-25", tema: "Revisión de proyectos" },
-  ];
+  const [reuniones, setReuniones] = useState([]);
+  const [tareas, setTareas] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const tareas = [
-    { descripcion: "Preparar informe", fechaLimite: "2024-09-30" },
-    { descripcion: "Revisar propuesta", fechaLimite: "2024-10-05" },
-  ];
+  // Cargar datos desde la API
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [reunionesResponse, tareasResponse] = await Promise.all([
+          api.get('/user/myMeetings'),
+          api.get('/user/myTasks')
+        ]);
+        
+        setReuniones(reunionesResponse.data || []);
+        setTareas(tareasResponse.data || []);
+      } catch (error) {
+        console.error('Error al cargar datos del dashboard:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const actas = [
-    { titulo: "Acta reunión 15/09", fecha: "2024-09-15" },
-    { titulo: "Acta reunión 08/09", fecha: "2024-09-08" },
-  ];
+    fetchData();
+  }, []);
+
+  // Formatear fechas para mostrar
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+  };
+
+  if (loading) {
+    return (
+      <div style={{ backgroundColor: 'var(--bg-page)', minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <div>Cargando...</div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ backgroundColor: 'var(--bg-page)', minHeight: '100vh' }}>
@@ -128,7 +146,6 @@ const Dashboard = () => {
           <div className="col-lg-8">
             <ProximasReuniones reuniones={reuniones} />
             <TareasPendientes tareas={tareas} />
-            <ActasRecientes actas={actas} />
           </div>
           <div className="col-lg-4">
             <BuscadorRapido />

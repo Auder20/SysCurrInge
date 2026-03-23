@@ -93,8 +93,10 @@ async function existsAdminUser() {
 
 async function getAllUsers() {
   try {
-    const users = await User.findAll(); // Obtiene todos los usuarios de la tabla
-    return users; // Retorna el array de usuarios como un objeto
+    const users = await User.findAll({
+      attributes: { exclude: ['contrasena'] }
+    });
+    return users;
   } catch (error) {
     console.error("Error al obtener todos los usuarios:", error);
     throw error;
@@ -103,8 +105,10 @@ async function getAllUsers() {
 
 async function getUserbyid(id) {
   try {
-    const user = await User.findByPk(id); // Busca al usuario por su clave primaria (ID)
-    return user; // Retorna el usuario si lo encuentra, o null si no existe
+    const user = await User.findByPk(id, {
+      attributes: { exclude: ['contrasena'] }
+    });
+    return user;
   } catch (error) {
     console.error("Error al obtener el usuario por ID:", error);
     throw error;
@@ -141,7 +145,6 @@ async function deleteUserData(id) {
 
 // Función para buscar un usuario por su ID y rol
 async function findUserByIdAndRole(id_usuario, rol) {
-  console.log("Este es el rol que se recibe", rol);
   try {
     // Buscar al usuario en la base de datos usando tanto el id como el rol
     const usuario = await User.findOne({
@@ -164,7 +167,6 @@ async function findUserByIdAndRole(id_usuario, rol) {
 }
 
 async function findUserById(id_usuario) {
-  console.log("Buscando usuario con ID:", id_usuario);
   try {
     // Buscar al usuario en la base de datos solo usando el id_usuario
     const usuario = await User.findOne({

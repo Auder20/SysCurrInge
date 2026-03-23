@@ -63,13 +63,13 @@ function VerificationCode({ email, onSuccess }) {
         <div className="d-flex justify-content-between">
           <button
             type="button"
-            className="btn btn-secondary"
+            className="btn-secondary-custom"
             onClick={() => navigate(-1)}
             disabled={loading}
           >
             Cancelar
           </button>
-          <button type="submit" className="btn btn-primary" disabled={loading}>
+          <button type="submit" className="btn-primary-custom" disabled={loading}>
             {loading ? (
               <>
                 <span

@@ -14,7 +14,7 @@ router.get("/myTasks", async (req, res) => {
     const tasks = await getTasksByUserId(req.user.id);
     res.json(tasks);
   } catch (error) {
-    console.log("Error al obtener las tareas del usuario", error);
+    console.error("Error al obtener las tareas del usuario", error);
     res.status(500).json({ error: "Error al obtener tareas del usuario" });
   }
 });
@@ -25,7 +25,7 @@ router.get("/myMeetings", async (req, res) => {
     const meetings = await getMeetingsByUserId(req.user.id);
     res.json(meetings);
   } catch (error) {
-    console.log("Error al obtener las reuniones del usuario", error);
+    console.error("Error al obtener las reuniones del usuario", error);
     res.status(500).json({ error: "Error al obtener reuniones del usuario" });
   }
 });

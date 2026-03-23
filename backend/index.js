@@ -11,7 +11,10 @@ const app = express();
 const PORT = process.env.PORT || 5001;
 
 // Security middleware
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: false, // Desactiva CSP — el frontend React maneja su propio CSP
+  crossOriginEmbedderPolicy: false, // Necesario si usas imágenes o recursos externos
+}));
 
 // Configuración de rate limiting
 const loginLimiter = rateLimit({

@@ -21,7 +21,7 @@ const getUsers = async (req, res) => {
     const users = await getAllUsers();
     res.json(users);
   } catch (error) {
-    console.log("Error al obtener los usuarios", error);
+    console.error("Error al obtener los usuarios", error);
     res.status(500).json({ error: "Error al obtener usuarios" });
   }
 };
@@ -31,7 +31,7 @@ const loadTasks = async (req, res) => {
     const tasks = await getAllTasks(); // Obtiene las tareas
     res.json(tasks); // Devuelve las tareas en formato JSON
   } catch (error) {
-    console.log("Error al obtener las tareas", error);
+    console.error("Error al obtener las tareas", error);
     res.status(500).json({ error: "Error al obtener tareas" });
   }
 };
@@ -113,16 +113,27 @@ const deleteUser = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const result = await deleteUserData(id);
-    if (result === null) {
+    // Evitar que se elimine al propio admin que hace la petición
+    if (parseInt(id) === req.user.id) {
+      return res.status(400).json({ message: "No puedes eliminar tu propia cuenta." });
+    }
+
+    // Buscar el usuario antes de eliminar
+    const userToDelete = await getUserbyid(id);
+    if (!userToDelete) {
       return res.status(404).json({ message: "Usuario no encontrado." });
     }
+
+    // Impedir borrar otros administradores
+    if (userToDelete.rol === 'administrador') {
+      return res.status(403).json({ message: "No se puede eliminar una cuenta de administrador." });
+    }
+
+    const result = await deleteUserData(id);
     return res.json(result);
   } catch (error) {
     console.error("Error al eliminar el usuario:", error);
-    return res
-      .status(500)
-      .json({ message: "Error interno al eliminar el usuario." });
+    return res.status(500).json({ message: "Error interno al eliminar el usuario." });
   }
 };
 
@@ -229,7 +240,7 @@ const getMeetings = async (req, res) => {
     const meetings = await getAllMeetings();
     res.json(meetings);
   } catch (error) {
-    console.log("Error al obtener las reuniones", error);
+    console.error("Error al obtener las reuniones", error);
     res.status(500).json({ error: "Error al obtener reuniones" });
   }
 };
@@ -282,7 +293,7 @@ const getAgendaByMeeting = async (req, res) => {
     const agendaItems = await getAgendaByMeetingId(parseInt(id_reunion));
     res.json(agendaItems);
   } catch (error) {
-    console.log("Error al obtener la agenda", error);
+    console.error("Error al obtener la agenda", error);
     res.status(500).json({ error: "Error al obtener agenda" });
   }
 };
