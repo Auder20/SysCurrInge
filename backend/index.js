@@ -103,10 +103,24 @@ app.get('/debug', async (req, res) => {
       users: userCount,
       tasks: taskCount,
       meetings: meetingCount,
-      adminExists: await User.findOne({ where: { correo_electronico: 'admin@syscurringe.com' } })
+      adminExists: await User.findOne({ where: { correo_electronico: 'admin@syscurringe.com' } }),
+      env: {
+        DB_HOST: process.env.DB_HOST,
+        DB_NAME: process.env.DB_NAME,
+        DB_USER: process.env.DB_USER,
+        NODE_ENV: process.env.NODE_ENV
+      }
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ 
+      error: error.message,
+      env: {
+        DB_HOST: process.env.DB_HOST,
+        DB_NAME: process.env.DB_NAME,
+        DB_USER: process.env.DB_USER,
+        NODE_ENV: process.env.NODE_ENV
+      }
+    });
   }
 });
 
