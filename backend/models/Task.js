@@ -124,11 +124,4 @@ async function getTasksByUserId(userId) {
   }
 }
 
-module.exports = {
-  createNewTask,
-  getAllTasks,
-  getTaskbyid,
-  updateTaskData,
-  deleteTaskData,
-  getTasksByUserId,
-};
+module.exports = TaskModel;
