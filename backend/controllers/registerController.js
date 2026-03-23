@@ -29,6 +29,17 @@ const validateAdminRole = async (req, res) => {
 
 const generateCode = async (req, res) => {
   const { email } = req.body; // Recibimos el correo del cuerpo de la solicitud.
+
+  // Validar que el email esté presente y tenga formato válido
+  if (!email) {
+    return res.status(400).json({ error: "El correo electrónico es obligatorio." });
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ error: "El formato del correo electrónico no es válido." });
+  }
+
   try {
     const { code, expirationTime } = generateVerificationCode();
 

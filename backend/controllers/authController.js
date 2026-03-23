@@ -15,13 +15,13 @@ async function login(req, res) {
     const user = await findByEmail(email);
 
     if (!user) {
-      return res.status(404).json({ error: "Usuario no encontrado" });
+      return res.status(401).json({ error: "Credenciales incorrectas" });
     }
 
     const isPasswordValid = bcrypt.compareSync(password, user.contrasena);
 
     if (!isPasswordValid) {
-      return res.status(401).json({ error: "Contraseña incorrecta" });
+      return res.status(401).json({ error: "Credenciales incorrectas" });
     }
 
     const token = jwt.sign(
