@@ -92,11 +92,35 @@ app.get('/health', healthCheck);
 app.get('/ready', readinessCheck);
 app.get('/debug', async (req, res) => {
   try {
-    // Mostrar solo DATABASE_URL para verificar configuración
+    // Importar modelos y verificar conexión
+    const sequelize = require('./config/database');
+    const { User, Task, Meeting } = require('./models');
+    
+    // Probar conexión a la base de datos
+    await sequelize.authenticate();
+    
+    // Contar usuarios
+    const userCount = await User.count();
+    const taskCount = await Task.count();
+    const meetingCount = await Meeting.count();
+    
+    // Verificar si existe admin
+    const adminUser = await User.findOne({ 
+      where: { correo_electronico: 'admin@syscurringe.com' } 
+    });
+    
     res.json({
       message: "Configuración de base de datos",
+      database_connection: "OK",
       database_url: process.env.DATABASE_URL ? '***CONFIGURADA***' : 'NO CONFIGURADA',
       database_url_length: process.env.DATABASE_URL ? process.env.DATABASE_URL.length : 0,
+      users: {
+        total: userCount,
+        admin_exists: !!adminUser,
+        admin_email: adminUser ? adminUser.correo_electronico : 'NO ENCONTRADO'
+      },
+      tasks: taskCount,
+      meetings: meetingCount,
       env: {
         DATABASE_URL: process.env.DATABASE_URL ? '***CONFIGURADA***' : 'NO CONFIGURADA',
         NODE_ENV: process.env.NODE_ENV || 'NO DEFINIDO'
