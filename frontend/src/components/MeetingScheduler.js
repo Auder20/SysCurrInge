@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import useCoordinator from "../hooks/useCoordinator";
+import { formatDate } from "../utils/dateUtils";
 
 function MeetingScheduler() {
   const navigate = useNavigate();
@@ -69,11 +70,6 @@ function MeetingScheduler() {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   const totalPages = Math.ceil(filteredMeetings.length / meetingsPerPage);
-
-  const formatDate = (dateString) => {
-    if (!dateString) return "Sin fecha";
-    return new Date(dateString).toLocaleDateString('es-CO');
-  };
 
   return (
   <div>

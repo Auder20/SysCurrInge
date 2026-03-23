@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { jwtDecode } from "jwt-decode";
 import useCoordinator from "../hooks/useCoordinator";
+import { formatDate } from "../utils/dateUtils";
 
 function TaskManagement() {
   const navigate = useNavigate();
@@ -69,11 +70,6 @@ function TaskManagement() {
                        status === 'en_progreso' ? 'badge-status-en-progreso' : 
                        'badge-status-completada';
     return <span className={statusClass}>{status}</span>;
-  };
-
-  const formatDate = (dateString) => {
-    if (!dateString) return "Sin fecha";
-    return new Date(dateString).toLocaleDateString('es-CO');
   };
 
   return (
