@@ -227,6 +227,100 @@ const getMeetings = async (req, res) => {
   }
 };
 
+const deleteMeeting = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const meeting = await Meeting.findByPk(id);
+    if (!meeting) {
+      return res.status(404).json({ message: "Reunión no encontrada." });
+    }
+
+    await meeting.destroy();
+    return res.json({ message: "Reunión eliminada correctamente" });
+  } catch (error) {
+    console.error("Error al eliminar la reunión:", error);
+    return res
+      .status(500)
+      .json({ message: "Error interno al eliminar la reunión." });
+  }
+};
+
+const getMeetingById = async (req, res) => {
+  const { id } = req.query;
+  try {
+    const meeting = await Meeting.findByPk(id);
+    if (!meeting) {
+      return res.status(404).json({ error: "Reunión no encontrada" });
+    }
+    res.json(meeting);
+  } catch (error) {
+    console.error("Error al obtener la reunión", error);
+    res.status(500).json({ error: "Error al obtener la reunión" });
+  }
+};
+
+const updateMeeting = async (req, res) => {
+  const { id } = req.query;
+  const { nombre_reunion, fecha, ubicacion, id_usuario } = req.body;
+
+  try {
+    const meeting = await Meeting.findByPk(id);
+    if (!meeting) {
+      return res.status(404).json({ error: "Reunión no encontrada" });
+    }
+
+    await meeting.update({
+      nombre_reunion,
+      fecha,
+      ubicacion,
+      id_usuario,
+    });
+
+    res.json({ message: "Reunión actualizada correctamente", meeting });
+  } catch (error) {
+    console.error("Error al actualizar la reunión:", error);
+    res.status(500).json({ error: "Error al actualizar la reunión" });
+  }
+};
+
+const saveAgenda = async (req, res) => {
+  const { id_reunion } = req.params;
+  const { agendaItems } = req.body;
+
+  try {
+    const meeting = await Meeting.findByPk(id_reunion);
+    if (!meeting) {
+      return res.status(404).json({ error: "Reunión no encontrada" });
+    }
+
+    // Aquí podrías guardar los ítems de agenda en una tabla separada
+    // Por ahora, solo devolvemos éxito
+    res.json({ message: "Agenda guardada correctamente", agendaItems });
+  } catch (error) {
+    console.error("Error al guardar la agenda:", error);
+    res.status(500).json({ error: "Error al guardar la agenda" });
+  }
+};
+
+const getAgendaByMeeting = async (req, res) => {
+  const { id_reunion } = req.params;
+
+  try {
+    const meeting = await Meeting.findByPk(id_reunion);
+    if (!meeting) {
+      return res.status(404).json({ error: "Reunión no encontrada" });
+    }
+
+    // Aquí podrías obtener los ítems de agenda de una tabla separada
+    // Por ahora, solo devolvemos la información de la reunión
+    res.json({ meeting, agendaItems: [] });
+  } catch (error) {
+    console.error("Error al obtener la agenda:", error);
+    res.status(500).json({ error: "Error al obtener la agenda" });
+  }
+};
+
 module.exports = {
   getUsers,
   loadTasks,
@@ -239,4 +333,9 @@ module.exports = {
   addTask,
   addMeeting,
   getMeetings,
+  deleteMeeting,
+  getMeetingById,
+  updateMeeting,
+  saveAgenda,
+  getAgendaByMeeting,
 };

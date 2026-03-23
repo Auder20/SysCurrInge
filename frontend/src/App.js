@@ -57,6 +57,15 @@ const App = () => {
                 <Route path="/admin/agendas" element={<MeetingAgendas />} />
                 <Route path="/admin/reports" element={<Reports />} />
                 
+                {/* Rutas para agregar */}
+                <Route path="/addTaskForm" element={<AddTaskForm />} />
+                <Route path="/addMeetingForm" element={<AddMeetingForm />} />
+                
+                {/* Rutas para editar */}
+                <Route path="/editTask/:id" element={<EditTask />} />
+                <Route path="/editMeeting/:id" element={<EditMeeting />} />
+                <Route path="/edit-user/:id" element={<EditUser />} />
+                
                 {/* Rutas de coordinador */}
                 <Route path="/coordinator" element={<CoordinatorDashboard />} />
                 
