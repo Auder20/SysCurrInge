@@ -91,6 +91,23 @@ app.use('/api/register/verify-code', verifyLimiter);
 // Rutas de health checks
 app.get('/health', healthCheck);
 app.get('/ready', readinessCheck);
+app.get('/debug', async (req, res) => {
+  try {
+    const { User, Task, Meeting } = require('./models');
+    const userCount = await User.count();
+    const taskCount = await Task.count();
+    const meetingCount = await Meeting.count();
+    
+    res.json({
+      users: userCount,
+      tasks: taskCount,
+      meetings: meetingCount,
+      adminExists: await User.findOne({ where: { correo_electronico: 'admin@syscurringe.com' } })
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 // Rutas
 app.use("/api/auth", authRoute);
