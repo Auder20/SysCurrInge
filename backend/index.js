@@ -105,6 +105,7 @@ app.get('/debug', async (req, res) => {
       meetings: meetingCount,
       adminExists: await User.findOne({ where: { correo_electronico: 'admin@syscurringe.com' } }),
       env: {
+        DATABASE_URL: process.env.DATABASE_URL ? '***CONFIGURADO***' : 'NO CONFIGURADO',
         DB_HOST: process.env.DB_HOST,
         DB_NAME: process.env.DB_NAME,
         DB_USER: process.env.DB_USER,
@@ -115,6 +116,7 @@ app.get('/debug', async (req, res) => {
     res.status(500).json({ 
       error: error.message,
       env: {
+        DATABASE_URL: process.env.DATABASE_URL ? '***CONFIGURADO***' : 'NO CONFIGURADO',
         DB_HOST: process.env.DB_HOST,
         DB_NAME: process.env.DB_NAME,
         DB_USER: process.env.DB_USER,
