@@ -21,12 +21,16 @@ function TaskList() {
 
         // Decodificar el token para obtener el ID del usuario
         const decoded = jwtDecode(token);
+        console.log("Token decodificado:", decoded);
         
         // Llamar a la API para obtener las tareas del usuario
+        console.log("Cargando tareas desde /user/myTasks...");
         const response = await api.get("/user/myTasks");
+        console.log("Respuesta de tareas:", response.data);
         setTasks(response.data || []);
       } catch (error) {
         console.error("Error al cargar las tareas:", error);
+        console.error("Error completo:", error.response?.data);
         setTasks([]);
       } finally {
         setLoading(false);

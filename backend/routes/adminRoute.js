@@ -11,11 +11,6 @@ const {
   updateTask,
   addMeeting,
   getMeetings,
-  deleteMeetingById,
-  saveAgenda,
-  getAgendaByMeeting,
-  getMeetingById,
-  updateMeeting,
 } = require("../controllers/adminController");
 const authMiddleware = require("../middlewares/authMiddleware");
 const roleMiddleware = require("../middlewares/roleMiddleware");
@@ -36,9 +31,5 @@ router.post("/addTask", addTask);
 router.post("/addMeeting", addMeeting);
 router.get("/loadTasks", loadTasks);
 router.get("/loadTaskById", getTaskById);
-router.get("/loadMeetingById", getMeetingById);
-router.put("/updateMeeting", updateMeeting);
-router.post("/saveAgenda/:id_reunion", saveAgenda);
-router.get("/agenda/:id_reunion", getAgendaByMeeting);
 
 module.exports = router;

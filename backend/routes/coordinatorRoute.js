@@ -10,7 +10,6 @@ const {
 const {
   getMeetings,
   addMeeting,
-  deleteMeetingById,
 } = require("../controllers/adminController");
 const {
   getUsers,
@@ -33,7 +32,6 @@ router.put("/updateTask", updateTask);
 // Meeting routes for coordinators
 router.get("/loadMeetings", getMeetings);
 router.post("/addMeeting", addMeeting);
-router.delete("/deleteMeeting/:id", deleteMeetingById);
 
 // User routes for coordinators
 router.get("/loadUsers", getUsers);

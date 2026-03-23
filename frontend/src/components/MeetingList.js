@@ -19,10 +19,13 @@ function MeetingList() {
         }
 
         // Llamar a la API para obtener todas las reuniones
+        console.log("Cargando reuniones desde /user/myMeetings...");
         const response = await api.get("/user/myMeetings");
+        console.log("Respuesta de reuniones:", response.data);
         setMeetings(response.data || []);
       } catch (error) {
         console.error("Error al cargar las reuniones:", error);
+        console.error("Error completo:", error.response?.data);
         setMeetings([]);
       } finally {
         setLoading(false);

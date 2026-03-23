@@ -1,7 +1,7 @@
 const express = require("express");
 const authMiddleware = require("../middlewares/authMiddleware");
-const { getTasksByUserId } = require("../models/Task");
-const { getMeetingsByUserId } = require("../models/Meeting");
+const Task = require("../models/Task");
+const Meeting = require("../models/Meeting");
 
 const router = express.Router();
 
@@ -11,7 +11,7 @@ router.use(authMiddleware);
 // Get tasks for the current user
 router.get("/myTasks", async (req, res) => {
   try {
-    const tasks = await getTasksByUserId(req.user.id);
+    const tasks = await Task.findAll({ where: { id_usuario: req.user.id } });
     res.json(tasks);
   } catch (error) {
     console.error("Error al obtener las tareas del usuario", error);
@@ -22,7 +22,7 @@ router.get("/myTasks", async (req, res) => {
 // Get all meetings for the current user
 router.get("/myMeetings", async (req, res) => {
   try {
-    const meetings = await getMeetingsByUserId(req.user.id);
+    const meetings = await Meeting.findAll({ where: { id_usuario: req.user.id } });
     res.json(meetings);
   } catch (error) {
     console.error("Error al obtener las reuniones del usuario", error);
