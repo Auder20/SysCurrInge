@@ -1,0 +1,5 @@
+#!/bin/bash
+# Limpiar cache de yarn
+echo "🧹 Limpiando cache de Yarn..."
+yarn cache clean
+echo "✅ Cache limpiada"
