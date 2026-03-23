@@ -4,20 +4,10 @@
   "outputDirectory": "build",
   "installCommand": "npm ci --production --prefer-offline",
   "framework": "create-react-app",
-  "functions": {},
   "routes": [
     {
       "src": "/(.*)",
       "dest": "/index.html"
-    }
-  ],
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "build"
-      }
     }
   ]
 }
