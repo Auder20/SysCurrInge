@@ -187,14 +187,50 @@ async function findUserById(id_usuario) {
   }
 }
 
-module.exports = {
-  findByEmail,
-  createNewUser,
-  existsAdminUser,
-  getAllUsers,
-  getUserbyid,
-  updateUserData,
-  deleteUserData,
-  findUserByIdAndRole,
-  findUserById,
-};
+// Exportar tanto el modelo como las funciones
+const UserModel = sequelize.define(
+  "Usuario",
+  {
+    id_usuario: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
+    },
+    nombre: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    apellido: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    correo_electronico: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    contrasena: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    rol: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    tipo_usuario: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    estado: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
+  },
+  {
+    tableName: "usuario",
+    timestamps: false,
+  }
+);
+
+module.exports = UserModel;

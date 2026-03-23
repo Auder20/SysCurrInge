@@ -1,16 +1,10 @@
 //registerController.js
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const {
   generateVerificationCode,
   sendVerificationEmail,
 } = require("../services/emailService");
-
-const {
-  findByEmail,
-  createNewUser,
-  existsAdminUser,
-} = require("../models/User");
+const { createNewUser, existsAdminUser, findByEmail } = require("../models/UserFunctions");
 const VerificationCode = require("../models/VerificationCode");
 
 const validateAdminRole = async (req, res) => {

@@ -1,6 +1,6 @@
-const { findByEmail, findUserById } = require("../models/User");
-const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const { findByEmail, findUserById } = require("../models/UserFunctions");
 
 async function login(req, res) {
   const { email, password } = req.body;
