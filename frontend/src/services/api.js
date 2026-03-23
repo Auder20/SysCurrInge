@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: "https://syscurringe.onrender.com/api",
 });
 
 // Interceptor para incluir automáticamente el token en cada petición
