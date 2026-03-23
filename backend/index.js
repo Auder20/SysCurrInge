@@ -93,35 +93,23 @@ app.get('/health', healthCheck);
 app.get('/ready', readinessCheck);
 app.get('/debug', async (req, res) => {
   try {
-    const sequelize = require('./config/database');
-    const { User, Task, Meeting } = require('./models');
-    const userCount = await User.count();
-    const taskCount = await Task.count();
-    const meetingCount = await Meeting.count();
-    
+    // Mostrar solo DATABASE_URL para verificar configuración
     res.json({
-      users: userCount,
-      tasks: taskCount,
-      meetings: meetingCount,
-      adminExists: await User.findOne({ where: { correo_electronico: 'admin@syscurringe.com' } }),
+      message: "Configuración de base de datos",
+      database_url: process.env.DATABASE_URL ? '***CONFIGURADA***' : 'NO CONFIGURADA',
+      database_url_length: process.env.DATABASE_URL ? process.env.DATABASE_URL.length : 0,
       env: {
-        DATABASE_URL: process.env.DATABASE_URL ? '***CONFIGURADO***' : 'NO CONFIGURADO',
-        DB_HOST: process.env.DB_HOST,
-        DB_NAME: process.env.DB_NAME,
-        DB_USER: process.env.DB_USER,
-        NODE_ENV: process.env.NODE_ENV
-      }
+        DATABASE_URL: process.env.DATABASE_URL ? '***CONFIGURADA***' : 'NO CONFIGURADA',
+        NODE_ENV: process.env.NODE_ENV || 'NO DEFINIDO'
+      },
+      render_vars: Object.keys(process.env).filter(key => 
+        key.includes('DATABASE') || key.includes('NODE_ENV')
+      )
     });
   } catch (error) {
     res.status(500).json({ 
       error: error.message,
-      env: {
-        DATABASE_URL: process.env.DATABASE_URL ? '***CONFIGURADO***' : 'NO CONFIGURADO',
-        DB_HOST: process.env.DB_HOST,
-        DB_NAME: process.env.DB_NAME,
-        DB_USER: process.env.DB_USER,
-        NODE_ENV: process.env.NODE_ENV
-      }
+      message: "Error al verificar configuración"
     });
   }
 });
