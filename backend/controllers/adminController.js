@@ -227,7 +227,7 @@ const getMeetings = async (req, res) => {
   }
 };
 
-    module.exports = {
+module.exports = {
   getUsers,
   loadTasks,
   getUserById,
