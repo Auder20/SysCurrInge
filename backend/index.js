@@ -16,11 +16,10 @@ const userRoute = require("./routes/userRoute");
 const coordinatorRoute = require("./routes/coordinatorRoute");
 
 // Validar variables de entorno requeridas
-const requiredEnvVars = ['JWT_SECRET', 'DB_NAME', 'DB_USER', 'DB_PASS', 'DB_HOST'];
+const requiredEnvVars = ['JWT_SECRET', 'DATABASE_URL'];
 const missingVars = requiredEnvVars.filter(v => !process.env[v]);
 if (missingVars.length > 0) {
   console.error(`❌ Variables de entorno faltantes: ${missingVars.join(', ')}`);
-  console.error('Revisa tu archivo .env');
   process.exit(1);
 }
 
