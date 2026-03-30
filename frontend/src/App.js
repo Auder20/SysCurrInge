@@ -65,7 +65,7 @@ const App = () => {
                 {/* Rutas para editar */}
                 <Route path="/editTask/:id" element={<EditTask />} />
                 <Route path="/editMeeting/:id" element={<EditMeeting />} />
-                <Route path="/edit-user/:id" element={<EditUserSimple />} />
+                <Route path="/edit-user/:id" element={<EditUser />} />
                 
                 {/* Rutas de coordinador */}
                 <Route path="/coordinator" element={<CoordinatorDashboard />} />
@@ -79,8 +79,6 @@ const App = () => {
                 {/* Rutas de asistencia */}
                 <Route path="/attendance" element={<AttendanceRegistration />} />
                 
-                {/* Rutas de edición */}
-                <Route path="/edit-user/:id" element={<EditUser />} />
                 
                 {/* Ruta por defecto */}
                 <Route path="/" element={<Navigate to="/login" replace />} />
