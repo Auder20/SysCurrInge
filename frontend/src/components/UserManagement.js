@@ -34,7 +34,7 @@ function UserManagement() {
   }
 
   const editUser = (userId) => {
-    navigate("/editUser/" + userId);
+    navigate("/edit-user/" + userId);
     console.log(`Editar usuario ${userId}`);
   };
 
