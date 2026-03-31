@@ -159,101 +159,21 @@ app.use((err, req, res, next) => {
 app.listen(PORT, async () => {
   logger.info(`Servidor corriendo en http://localhost:${PORT}`);
   logger.info(`Entorno: ${process.env.NODE_ENV || 'development'}`);
-  
-  // Ejecutar seed automáticamente en producción si es necesario
-  if (process.env.NODE_ENV === 'production') {
+
+  // Ejecutar seed si RUN_SEED=true está en las variables de entorno
+  if (process.env.RUN_SEED === 'true') {
     await runAutoSeed();
   }
 });
 
-// Función para seed automática
+// Función para seed automática — delega al seed.js principal
 async function runAutoSeed() {
   try {
-    logger.info('🗄️ Ejecutando seed automática en producción...');
-    
-    // Importar modelos y sequelize
-    const sequelize = require('./config/database');
-    const { User, Task, Meeting } = require('./models');
-    
-    // Sincronizar todas las tablas (crear si no existen)
-    await sequelize.sync({ force: false, alter: true });
-    logger.info('✅ Tablas sincronizadas');
-    
-    // Verificar si ya existe el admin
-    const adminExists = await User.findOne({ 
-      where: { correo_electronico: 'admin@syscurringe.com' } 
-    });
-    
-    if (!adminExists) {
-      logger.info('📦 Creando usuarios iniciales...');
-      
-      const bcrypt = require('bcryptjs');
-      const users = [
-        {
-          nombre: 'Admin',
-          apellido: 'Sistema',
-          correo_electronico: 'admin@syscurringe.com',
-          contrasena: await bcrypt.hash('Admin123!', 10),
-          rol: 'administrador',
-          tipo_usuario: 'interno',
-          estado: true
-        },
-        {
-          nombre: 'Coordinador',
-          apellido: 'Demo',
-          correo_electronico: 'coordinador@syscurringe.com',
-          contrasena: await bcrypt.hash('Coord123!', 10),
-          rol: 'coordinador',
-          tipo_usuario: 'interno',
-          estado: true
-        }
-      ];
-      
-      for (const user of users) {
-        try {
-          await User.create(user);
-          logger.info(`✅ Usuario creado: ${user.correo_electronico}`);
-        } catch (error) {
-          if (error.name === 'SequelizeUniqueConstraintError') {
-            logger.info(`⏭ Usuario ya existe: ${user.correo_electronico}`);
-          } else {
-            logger.error(`❌ Error creando usuario: ${error.message}`);
-          }
-        }
-      }
-    }
-    
-    // Verificar si ya existen tareas
-    const tasksCount = await Task.count();
-    if (tasksCount === 0) {
-      logger.info('📦 Creando tareas iniciales...');
-      
-      const tasks = [
-        {
-          descripcion: 'Configurar base de datos de producción',
-          fecha_vencimiento: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-          estado: 'pendiente'
-        },
-        {
-          descripcion: 'Revisar configuración de CORS',
-          fecha_vencimiento: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-          estado: 'en_progreso'
-        }
-      ];
-      
-      for (const task of tasks) {
-        try {
-          await Task.create(task);
-          logger.info(`✅ Tarea creada: ${task.descripcion.substring(0, 30)}...`);
-        } catch (error) {
-          logger.error(`❌ Error creando tarea: ${error.message}`);
-        }
-      }
-    }
-    
-    logger.info('🎉 Seed automática completada exitosamente!');
-    
+    logger.info('🗄️ Iniciando seed desde seed.js...');
+    // Require ejecuta el archivo completo incluyendo la llamada a seed()
+    require('./seed.js');
+    logger.info('🎉 Seed lanzada. Revisa los logs para el resultado.');
   } catch (error) {
-    logger.error('❌ Error en seed automática:', error);
+    logger.error('❌ Error al lanzar seed:', error);
   }
 }
