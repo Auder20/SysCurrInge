@@ -205,62 +205,63 @@ async function seed() {
 
     // ── 2. TAREAS ─────────────────────────────────────────
     console.log('\n📋 Insertando tareas...');
-    const tareasExistentes = await Tarea.count();
+    
+    const responsables = [...coords, ...miembros, admin, jefe].filter(Boolean);
+    const tareas = [
+      { descripcion: 'Preparar presentación para la reunión de planificación trimestral. Incluir métricas del Q1 y proyecciones para Q2.',                       fecha_vencimiento: '2026-04-15', estado: 'pendiente',    id_usuario: responsables[0]?.id_usuario },
+      { descripcion: 'Revisar y actualizar el manual de procedimientos del departamento. Sección 3: gestión de actas.',                                           fecha_vencimiento: '2026-04-10', estado: 'en_progreso',  id_usuario: responsables[1]?.id_usuario },
+      { descripcion: 'Enviar convocatoria a todos los participantes para la reunión extraordinaria de abril.',                                                     fecha_vencimiento: '2026-04-05', estado: 'completada',   id_usuario: responsables[2]?.id_usuario },
+      { descripcion: 'Consolidar el informe de asistencia de las últimas 5 reuniones y enviarlo a administración.',                                               fecha_vencimiento: '2026-04-20', estado: 'pendiente',    id_usuario: responsables[3]?.id_usuario },
+      { descripcion: 'Diseñar plantilla estándar para actas de reunión según los nuevos lineamientos institucionales.',                                           fecha_vencimiento: '2026-03-30', estado: 'en_progreso',  id_usuario: responsables[4]?.id_usuario },
+      { descripcion: 'Actualizar base de datos de participantes con la información del nuevo semestre académico.',                                                 fecha_vencimiento: '2026-04-25', estado: 'pendiente',    id_usuario: admin?.id_usuario },
+      { descripcion: 'Coordinar con TI la instalación del nuevo sistema de videoconferencia en sala principal.',                                                  fecha_vencimiento: '2026-04-08', estado: 'completada',   id_usuario: responsables[1]?.id_usuario },
+      { descripcion: 'Elaborar orden del día para la asamblea general del próximo mes.',                                                                          fecha_vencimiento: '2026-04-30', estado: 'pendiente',    id_usuario: responsables[0]?.id_usuario },
+      { descripcion: 'Levantar acta de la reunión de coordinadores del 25 de marzo y distribuirla a los asistentes.',                                             fecha_vencimiento: '2026-04-02', estado: 'completada',   id_usuario: responsables[2]?.id_usuario },
+      { descripcion: 'Revisar propuestas de mejora enviadas por los participantes y clasificarlas por prioridad.',                                                 fecha_vencimiento: '2026-04-12', estado: 'pendiente',    id_usuario: jefe?.id_usuario },
+      { descripcion: 'Configurar el nuevo sistema de gestión documental y capacitar al equipo en su uso.',                                                        fecha_vencimiento: '2026-04-18', estado: 'en_progreso',  id_usuario: responsables[1]?.id_usuario },
+      { descripcion: 'Elaborar informe de indicadores de gestión para el comité de evaluación semestral.',                                                        fecha_vencimiento: '2026-05-01', estado: 'pendiente',    id_usuario: jefe?.id_usuario },
+      { descripcion: 'Coordinar la logística del taller de innovación: sala, materiales, refrigerios y confirmación de asistencia.',                             fecha_vencimiento: '2026-05-15', estado: 'pendiente',    id_usuario: responsables[3]?.id_usuario },
+      { descripcion: 'Actualizar el directorio institucional con los datos de contacto del nuevo personal vinculado en el primer trimestre.',                      fecha_vencimiento: '2026-04-07', estado: 'completada',   id_usuario: responsables[2]?.id_usuario },
+      { descripcion: 'Preparar el plan de trabajo para el proyecto de digitalización: cronograma, presupuesto y recursos.',                                       fecha_vencimiento: '2026-05-10', estado: 'pendiente',    id_usuario: jefe?.id_usuario },
+      { descripcion: 'Realizar encuesta de satisfacción a los participantes sobre las reuniones del Q1 y tabular resultados.',                                     fecha_vencimiento: '2026-04-14', estado: 'en_progreso',  id_usuario: responsables[0]?.id_usuario },
+      { descripcion: 'Revisar y aprobar los borradores de las actas de las últimas tres reuniones antes de su publicación oficial.',                               fecha_vencimiento: '2026-04-06', estado: 'completada',   id_usuario: admin?.id_usuario },
+      { descripcion: 'Crear y publicar el calendario de reuniones para el segundo trimestre en el portal interno.',                                                fecha_vencimiento: '2026-04-03', estado: 'completada',   id_usuario: responsables[1]?.id_usuario },
+      { descripcion: 'Documentar los procesos de onboarding para nuevos miembros que se incorporen durante el Q2.',                                               fecha_vencimiento: '2026-04-28', estado: 'pendiente',    id_usuario: responsables[3]?.id_usuario },
+      { descripcion: 'Preparar resumen ejecutivo del Q1 para presentar a las directivas en la reunión de cierre trimestral.',                                     fecha_vencimiento: '2026-03-28', estado: 'completada',   id_usuario: admin?.id_usuario },
+      { descripcion: 'Desarrollar protocolo de gestión de conflictos para uso en reuniones con múltiples partes involucradas.',                                   fecha_vencimiento: '2026-05-05', estado: 'pendiente',    id_usuario: responsables[0]?.id_usuario },
+      { descripcion: 'Migrar los archivos históricos de actas al nuevo repositorio digital y verificar su integridad.',                                           fecha_vencimiento: '2026-04-22', estado: 'en_progreso',  id_usuario: responsables[1]?.id_usuario },
+      { descripcion: 'Definir métricas de éxito para el proyecto de digitalización y establecer línea base de medición.',                                         fecha_vencimiento: '2026-05-08', estado: 'pendiente',    id_usuario: jefe?.id_usuario },
+      { descripcion: 'Organizar sesión de retroalimentación con miembros sobre el funcionamiento de las reuniones virtuales.',                                     fecha_vencimiento: '2026-04-16', estado: 'pendiente',    id_usuario: responsables[2]?.id_usuario },
+      { descripcion: 'Actualizar las políticas de uso de salas de reuniones y publicarlas en el portal institucional.',                                           fecha_vencimiento: '2026-04-11', estado: 'en_progreso',  id_usuario: admin?.id_usuario },
+    ];
 
-    if (tareasExistentes > 0) {
-      console.log(`   ⏭  Ya existen ${tareasExistentes} tareas`);
-    } else {
-      const responsables = [...coords, ...miembros, admin, jefe].filter(Boolean);
-      const tareas = [
-        { descripcion: 'Preparar presentación para la reunión de planificación trimestral. Incluir métricas del Q1 y proyecciones para Q2.',                       fecha_vencimiento: '2026-04-15', estado: 'pendiente',    id_usuario: responsables[0]?.id_usuario },
-        { descripcion: 'Revisar y actualizar el manual de procedimientos del departamento. Sección 3: gestión de actas.',                                           fecha_vencimiento: '2026-04-10', estado: 'en_progreso',  id_usuario: responsables[1]?.id_usuario },
-        { descripcion: 'Enviar convocatoria a todos los participantes para la reunión extraordinaria de abril.',                                                     fecha_vencimiento: '2026-04-05', estado: 'completada',   id_usuario: responsables[2]?.id_usuario },
-        { descripcion: 'Consolidar el informe de asistencia de las últimas 5 reuniones y enviarlo a administración.',                                               fecha_vencimiento: '2026-04-20', estado: 'pendiente',    id_usuario: responsables[3]?.id_usuario },
-        { descripcion: 'Diseñar plantilla estándar para actas de reunión según los nuevos lineamientos institucionales.',                                           fecha_vencimiento: '2026-03-30', estado: 'en_progreso',  id_usuario: responsables[4]?.id_usuario },
-        { descripcion: 'Actualizar base de datos de participantes con la información del nuevo semestre académico.',                                                 fecha_vencimiento: '2026-04-25', estado: 'pendiente',    id_usuario: admin?.id_usuario },
-        { descripcion: 'Coordinar con TI la instalación del nuevo sistema de videoconferencia en sala principal.',                                                  fecha_vencimiento: '2026-04-08', estado: 'completada',   id_usuario: responsables[1]?.id_usuario },
-        { descripcion: 'Elaborar orden del día para la asamblea general del próximo mes.',                                                                          fecha_vencimiento: '2026-04-30', estado: 'pendiente',    id_usuario: responsables[0]?.id_usuario },
-        { descripcion: 'Levantar acta de la reunión de coordinadores del 25 de marzo y distribuirla a los asistentes.',                                             fecha_vencimiento: '2026-04-02', estado: 'completada',   id_usuario: responsables[2]?.id_usuario },
-        { descripcion: 'Revisar propuestas de mejora enviadas por los participantes y clasificarlas por prioridad.',                                                 fecha_vencimiento: '2026-04-12', estado: 'pendiente',    id_usuario: jefe?.id_usuario },
-        { descripcion: 'Configurar el nuevo sistema de gestión documental y capacitar al equipo en su uso.',                                                        fecha_vencimiento: '2026-04-18', estado: 'en_progreso',  id_usuario: responsables[1]?.id_usuario },
-        { descripcion: 'Elaborar informe de indicadores de gestión para el comité de evaluación semestral.',                                                        fecha_vencimiento: '2026-05-01', estado: 'pendiente',    id_usuario: jefe?.id_usuario },
-        { descripcion: 'Coordinar la logística del taller de innovación: sala, materiales, refrigerios y confirmación de asistencia.',                             fecha_vencimiento: '2026-05-15', estado: 'pendiente',    id_usuario: responsables[3]?.id_usuario },
-        { descripcion: 'Actualizar el directorio institucional con los datos de contacto del nuevo personal vinculado en el primer trimestre.',                      fecha_vencimiento: '2026-04-07', estado: 'completada',   id_usuario: responsables[2]?.id_usuario },
-        { descripcion: 'Preparar el plan de trabajo para el proyecto de digitalización: cronograma, presupuesto y recursos.',                                       fecha_vencimiento: '2026-05-10', estado: 'pendiente',    id_usuario: jefe?.id_usuario },
-        { descripcion: 'Realizar encuesta de satisfacción a los participantes sobre las reuniones del Q1 y tabular resultados.',                                     fecha_vencimiento: '2026-04-14', estado: 'en_progreso',  id_usuario: responsables[0]?.id_usuario },
-        { descripcion: 'Revisar y aprobar los borradores de las actas de las últimas tres reuniones antes de su publicación oficial.',                               fecha_vencimiento: '2026-04-06', estado: 'completada',   id_usuario: admin?.id_usuario },
-        { descripcion: 'Crear y publicar el calendario de reuniones para el segundo trimestre en el portal interno.',                                                fecha_vencimiento: '2026-04-03', estado: 'completada',   id_usuario: responsables[1]?.id_usuario },
-        { descripcion: 'Documentar los procesos de onboarding para nuevos miembros que se incorporen durante el Q2.',                                               fecha_vencimiento: '2026-04-28', estado: 'pendiente',    id_usuario: responsables[3]?.id_usuario },
-        { descripcion: 'Preparar resumen ejecutivo del Q1 para presentar a las directivas en la reunión de cierre trimestral.',                                     fecha_vencimiento: '2026-03-28', estado: 'completada',   id_usuario: admin?.id_usuario },
-        { descripcion: 'Desarrollar protocolo de gestión de conflictos para uso en reuniones con múltiples partes involucradas.',                                   fecha_vencimiento: '2026-05-05', estado: 'pendiente',    id_usuario: responsables[0]?.id_usuario },
-        { descripcion: 'Migrar los archivos históricos de actas al nuevo repositorio digital y verificar su integridad.',                                           fecha_vencimiento: '2026-04-22', estado: 'en_progreso',  id_usuario: responsables[1]?.id_usuario },
-        { descripcion: 'Definir métricas de éxito para el proyecto de digitalización y establecer línea base de medición.',                                         fecha_vencimiento: '2026-05-08', estado: 'pendiente',    id_usuario: jefe?.id_usuario },
-        { descripcion: 'Organizar sesión de retroalimentación con miembros sobre el funcionamiento de las reuniones virtuales.',                                     fecha_vencimiento: '2026-04-16', estado: 'pendiente',    id_usuario: responsables[2]?.id_usuario },
-        { descripcion: 'Actualizar las políticas de uso de salas de reuniones y publicarlas en el portal institucional.',                                           fecha_vencimiento: '2026-04-11', estado: 'en_progreso',  id_usuario: admin?.id_usuario },
-      ];
-
-      for (const t of tareas) {
+    for (const t of tareas) {
+      const existe = await Tarea.findOne({ where: { descripcion: t.descripcion } });
+      if (!existe) {
         await Tarea.create(t);
         console.log(`   ✔  Tarea: "${t.descripcion.substring(0, 55)}..." (${t.estado})`);
+      } else {
+        console.log(`   ⏭  Ya existe: "${t.descripcion.substring(0, 55)}..."`);
       }
     }
 
     // ── 3. REUNIONES ──────────────────────────────────────
     console.log('\n📅 Insertando reuniones...');
-    const reunionesExistentes = await Reunion.count();
     let reunionesCreadas = [];
-
-    if (reunionesExistentes > 0) {
-      console.log(`   ⏭  Ya existen ${reunionesExistentes} reuniones`);
-      reunionesCreadas = await Reunion.findAll();
-    } else {
-      const responsablesReunion = [admin, coords[0], coords[1], admin, coords[0], jefe, coords[1], coords[0], jefe, coords[1], admin, jefe];
-      for (let i = 0; i < reunionesData.length; i++) {
-        const r    = reunionesData[i];
+    
+    const responsablesReunion = [admin, coords[0], coords[1], admin, coords[0], jefe, coords[1], coords[0], jefe, coords[1], admin, jefe];
+    for (let i = 0; i < reunionesData.length; i++) {
+      const r = reunionesData[i];
+      const existe = await Reunion.findOne({ where: { nombre_reunion: r.nombre_reunion } });
+      
+      if (!existe) {
         const resp = responsablesReunion[i % responsablesReunion.length];
         const nueva = await Reunion.create({ ...r, id_usuario: resp?.id_usuario || null });
         reunionesCreadas.push(nueva);
         console.log(`   ✔  Reunión: "${r.nombre_reunion}" (${r.fecha})`);
+      } else {
+        reunionesCreadas.push(existe);
+        console.log(`   ⏭  Ya existe: "${r.nombre_reunion}"`);
       }
     }
 
