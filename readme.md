@@ -112,6 +112,22 @@ EMAIL_PASSWORD=tu_app_password
 npm run dev
 ```
 
+### Seed (Datos iniciales)
+
+Para poblar la base de datos con usuarios de ejemplo y datos de prueba:
+
+```bash
+cd backend
+node seed.js
+```
+
+O para ejecución automática al iniciar el servidor, agrega a tu `.env`:
+```env
+RUN_SEED=true
+```
+
+**Nota importante**: La seed está diseñada para ser idempotente - solo inserta datos si no existen previamente.
+
 ### Frontend
 
 ```bash
@@ -130,6 +146,22 @@ La app estará disponible en `http://localhost:3000` y consumirá el backend en 
 - El primer usuario en registrarse puede elegir el rol de administrador; ese rol queda deshabilitado en el formulario una vez que ya existe uno.
 - La verificación de correo usa un código de 6 dígitos con expiración de 15 minutos.
 - El middleware de autenticación protege las rutas del panel de administración verificando el token en el header `Authorization: Bearer <token>`.
+
+---
+
+## Despliegue
+
+### Render (Backend)
+
+El backend está configurado para desplegarse en **Render**. Para que la seed se ejecute automáticamente en producción:
+
+1. En el dashboard de Render, ve a tu proyecto
+2. Settings → Environment Variables  
+3. Agrega: `RUN_SEED` = `true`
+
+### Vercel (Frontend)
+
+El frontend se despliega en **Vercel** con configuración automática.
 
 ---
 

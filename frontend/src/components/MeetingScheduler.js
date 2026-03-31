@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import useCoordinator from "../hooks/useCoordinator";
+import useAdmin from "../hooks/useAdmin";
 import { formatDate } from "../utils/dateUtils";
 
 function MeetingScheduler() {
@@ -12,7 +12,7 @@ function MeetingScheduler() {
   const [currentPage, setCurrentPage] = useState(1);
   const [meetingsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
-  const { loadAllMeetings, deleteMeeting } = useCoordinator();
+  const { loadAllMeetings, deleteMeeting } = useAdmin();
 
   useEffect(() => {
     const loadMeetings = async () => {
