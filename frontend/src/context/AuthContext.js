@@ -51,11 +51,17 @@ function logout(setUser) {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchUser(setUser, setLoading);
+    const token = localStorage.getItem("token");
+    if (token) {
+      setLoading(true);
+      fetchUser(setUser, setLoading);
+    } else {
+      setLoading(false);
+    }
   }, []);
 
   return (
@@ -68,7 +74,7 @@ export const AuthProvider = ({ children }) => {
         logout: () => logout(setUser),
       }}
     >
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 };

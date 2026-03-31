@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   BrowserRouter as Router,
   Route,
   Routes,
   Navigate,
 } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider, AuthContext } from "./context/AuthContext";
 import Login from "./components/Login";
 import DashBoard from "./components/DashBoard";
 import Register from "./components/Register";
@@ -32,6 +32,63 @@ import EditTask from "./components/EditTask";
 import AddMeetingForm from "./components/AddMeetingForm";
 import EditMeeting from "./components/EditMeeting";
 import ProtectedRoute from "./components/ProtectedRoute";
+import LoadingSpinner from "./components/LoadingSpinner";
+
+const AppContent = () => {
+  const { loading } = useContext(AuthContext);
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  return (
+    <Router>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        {/* Rutas de registro */}
+        <Route path="/register" element={<Register />} />
+        <Route path="/verification-code" element={<VerificationCode />} />
+        
+        {/* Rutas principales del dashboard */}
+        <Route path="/dashboard" element={<DashBoard />} />
+        <Route path="/dashboard2" element={<DashBoard2 />} />
+        
+        {/* Rutas de administración */}
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/users" element={<UserManagement />} />
+        <Route path="/admin/tasks" element={<TaskManagement />} />
+        <Route path="/admin/meetings" element={<MeetingManagement />} />
+        <Route path="/admin/agendas" element={<MeetingAgendas />} />
+        <Route path="/admin/reports" element={<Reports />} />
+        
+        {/* Rutas para agregar */}
+        <Route path="/addTaskForm" element={<AddTaskForm />} />
+        <Route path="/addMeetingForm" element={<AddMeetingForm />} />
+        
+        {/* Rutas para editar */}
+        <Route path="/editTask/:id" element={<EditTask />} />
+        <Route path="/editMeeting/:id" element={<EditMeeting />} />
+        <Route path="/edit-user/:id" element={<EditUser />} />
+        
+        {/* Rutas de coordinador */}
+        <Route path="/coordinator" element={<CoordinatorDashboard />} />
+        
+        {/* Rutas de miembro */}
+        <Route path="/member" element={<MemberDashboard />} />
+        
+        {/* Rutas de invitado */}
+        <Route path="/guest" element={<GuestDashboard />} />
+        
+        {/* Rutas de asistencia */}
+        <Route path="/attendance" element={<AttendanceRegistration />} />
+        
+        
+        {/* Ruta por defecto */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </Router>
+  );
+};
 
 const App = () => {
   return (
@@ -39,51 +96,7 @@ const App = () => {
       <RegisterProvider>
         <AdminProvider>
           <CoordinatorProvider>
-            <Router>
-              <Routes>
-                <Route path="/login" element={<Login />} />
-                {/* Rutas de registro */}
-                <Route path="/register" element={<Register />} />
-                <Route path="/verification-code" element={<VerificationCode />} />
-                
-                {/* Rutas principales del dashboard */}
-                <Route path="/dashboard" element={<DashBoard />} />
-                <Route path="/dashboard2" element={<DashBoard2 />} />
-                
-                {/* Rutas de administración */}
-                <Route path="/admin" element={<AdminDashboard />} />
-                <Route path="/admin/users" element={<UserManagement />} />
-                <Route path="/admin/tasks" element={<TaskManagement />} />
-                <Route path="/admin/meetings" element={<MeetingManagement />} />
-                <Route path="/admin/agendas" element={<MeetingAgendas />} />
-                <Route path="/admin/reports" element={<Reports />} />
-                
-                {/* Rutas para agregar */}
-                <Route path="/addTaskForm" element={<AddTaskForm />} />
-                <Route path="/addMeetingForm" element={<AddMeetingForm />} />
-                
-                {/* Rutas para editar */}
-                <Route path="/editTask/:id" element={<EditTask />} />
-                <Route path="/editMeeting/:id" element={<EditMeeting />} />
-                <Route path="/edit-user/:id" element={<EditUser />} />
-                
-                {/* Rutas de coordinador */}
-                <Route path="/coordinator" element={<CoordinatorDashboard />} />
-                
-                {/* Rutas de miembro */}
-                <Route path="/member" element={<MemberDashboard />} />
-                
-                {/* Rutas de invitado */}
-                <Route path="/guest" element={<GuestDashboard />} />
-                
-                {/* Rutas de asistencia */}
-                <Route path="/attendance" element={<AttendanceRegistration />} />
-                
-                
-                {/* Ruta por defecto */}
-                <Route path="/" element={<Navigate to="/login" replace />} />
-              </Routes>
-            </Router>
+            <AppContent />
           </CoordinatorProvider>
         </AdminProvider>
       </RegisterProvider>
