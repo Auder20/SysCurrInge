@@ -1,4 +1,3 @@
-
 require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const { DataTypes } = require('sequelize');
@@ -314,10 +313,22 @@ async function seed() {
   } catch (error) {
     console.error('❌ Error durante la semilla:', error.message);
     if (error.original) console.error('   DB error:', error.original.message);
-    process.exit(1);
+    if (require.main === module) {
+      await sequelize.close();
+      process.exit(1);
+    }
+    throw error;
   } finally {
-    await sequelize.close();
+    if (require.main === module) {
+      await sequelize.close();
+    }
   }
 }
 
-seed();
+// Ejecución directa: node seed.js
+if (require.main === module) {
+  seed();
+}
+
+// Importado desde index.js
+module.exports = seed;

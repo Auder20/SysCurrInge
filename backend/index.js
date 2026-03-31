@@ -170,10 +170,10 @@ app.listen(PORT, async () => {
 async function runAutoSeed() {
   try {
     logger.info('🗄️ Iniciando seed desde seed.js...');
-    // Require ejecuta el archivo completo incluyendo la llamada a seed()
-    require('./seed.js');
-    logger.info('🎉 Seed lanzada. Revisa los logs para el resultado.');
+    const seed = require('./seed.js');
+    await seed();
+    logger.info('🎉 Seed completada exitosamente.');
   } catch (error) {
-    logger.error('❌ Error al lanzar seed:', error);
+    logger.error('❌ Error en seed:', error.message);
   }
 }
