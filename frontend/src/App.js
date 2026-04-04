@@ -9,7 +9,6 @@ import { AuthProvider, AuthContext } from "./context/AuthContext";
 import Login from "./components/Login";
 import DashBoard from "./components/DashBoard";
 import Register from "./components/Register";
-import DashBoard2 from "./components/DashBoard2";
 import AttendanceRegistration from "./components/AttendanceRegistration";
 import MeetingAgendas from "./components/MeetingAgendas";
 import MeetingManagement from "./components/MeetingManagement";
@@ -50,37 +49,36 @@ const AppContent = () => {
         <Route path="/verification-code" element={<VerificationCode />} />
         
         {/* Rutas principales del dashboard */}
-        <Route path="/dashboard" element={<DashBoard />} />
-        <Route path="/dashboard2" element={<DashBoard2 />} />
+        <Route path="/dashboard" element={<ProtectedRoute><DashBoard /></ProtectedRoute>} />
         
         {/* Rutas de administración */}
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/users" element={<UserManagement />} />
-        <Route path="/admin/tasks" element={<TaskManagement />} />
-        <Route path="/admin/meetings" element={<MeetingManagement />} />
-        <Route path="/admin/agendas" element={<MeetingAgendas />} />
-        <Route path="/admin/reports" element={<Reports />} />
+        <Route path="/admin" element={<ProtectedRoute roles={['administrador']}><AdminDashboard /></ProtectedRoute>} />
+        <Route path="/admin/users" element={<ProtectedRoute roles={['administrador']}><UserManagement /></ProtectedRoute>} />
+        <Route path="/admin/tasks" element={<ProtectedRoute roles={['administrador']}><TaskManagement /></ProtectedRoute>} />
+        <Route path="/admin/meetings" element={<ProtectedRoute roles={['administrador']}><MeetingManagement /></ProtectedRoute>} />
+        <Route path="/admin/agendas" element={<ProtectedRoute roles={['administrador']}><MeetingAgendas /></ProtectedRoute>} />
+        <Route path="/admin/reports" element={<ProtectedRoute roles={['administrador']}><Reports /></ProtectedRoute>} />
         
         {/* Rutas para agregar */}
-        <Route path="/addTaskForm" element={<AddTaskForm />} />
-        <Route path="/addMeetingForm" element={<AddMeetingForm />} />
+        <Route path="/addTaskForm" element={<ProtectedRoute roles={['administrador']}><AddTaskForm /></ProtectedRoute>} />
+        <Route path="/addMeetingForm" element={<ProtectedRoute roles={['administrador']}><AddMeetingForm /></ProtectedRoute>} />
         
         {/* Rutas para editar */}
-        <Route path="/editTask/:id" element={<EditTask />} />
-        <Route path="/editMeeting/:id" element={<EditMeeting />} />
-        <Route path="/edit-user/:id" element={<EditUser />} />
+        <Route path="/editTask/:id" element={<ProtectedRoute roles={['administrador']}><EditTask /></ProtectedRoute>} />
+        <Route path="/editMeeting/:id" element={<ProtectedRoute roles={['administrador']}><EditMeeting /></ProtectedRoute>} />
+        <Route path="/edit-user/:id" element={<ProtectedRoute roles={['administrador']}><EditUser /></ProtectedRoute>} />
         
         {/* Rutas de coordinador */}
-        <Route path="/coordinator" element={<CoordinatorDashboard />} />
+        <Route path="/coordinator" element={<ProtectedRoute roles={['coordinador']}><CoordinatorDashboard /></ProtectedRoute>} />
         
         {/* Rutas de miembro */}
-        <Route path="/member" element={<MemberDashboard />} />
+        <Route path="/member" element={<ProtectedRoute roles={['participante']}><MemberDashboard /></ProtectedRoute>} />
         
         {/* Rutas de invitado */}
-        <Route path="/guest" element={<GuestDashboard />} />
+        <Route path="/guest" element={<ProtectedRoute><GuestDashboard /></ProtectedRoute>} />
         
         {/* Rutas de asistencia */}
-        <Route path="/attendance" element={<AttendanceRegistration />} />
+        <Route path="/attendance" element={<ProtectedRoute><AttendanceRegistration /></ProtectedRoute>} />
         
         
         {/* Ruta por defecto */}

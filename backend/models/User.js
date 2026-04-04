@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
+const logger = require("../config/logger");
 
 // Definimos el modelo de usuario
 function createModelUser() {
@@ -58,7 +59,7 @@ async function findByEmail(correo) {
     });
     return user;
   } catch (error) {
-    console.error("Error al buscar el usuario por correo electrónico:", error);
+    logger.error("Error al buscar el usuario por correo electrónico:", error);
     throw error;
   }
 }
@@ -68,7 +69,7 @@ async function createNewUser(userNew) {
     const user = await User.create(userNew);
     return user;
   } catch (error) {
-    console.error("Error al crear el usuario:", error);
+    logger.error("Error al crear el usuario:", error);
     throw error;
   }
 }
@@ -83,7 +84,7 @@ async function existsAdminUser() {
     // Si se encuentra un administrador, retorna true, sino false
     return !!adminUser; // Retorna true si hay un administrador, false si no
   } catch (error) {
-    console.error(
+    logger.error(
       "Error al buscar un usuario con rol de administrador:",
       error
     );
@@ -98,7 +99,7 @@ async function getAllUsers() {
     });
     return users;
   } catch (error) {
-    console.error("Error al obtener todos los usuarios:", error);
+    logger.error("Error al obtener todos los usuarios:", error);
     throw error;
   }
 }
@@ -110,7 +111,7 @@ async function getUserbyid(id) {
     });
     return user;
   } catch (error) {
-    console.error("Error al obtener el usuario por ID:", error);
+    logger.error("Error al obtener el usuario por ID:", error);
     throw error;
   }
 }
@@ -124,7 +125,7 @@ async function updateUserData(id, newUserData) {
     await user.update(newUserData);
     return user;
   } catch (error) {
-    console.error("Error al actualizar los datos del usuario:", error);
+    logger.error("Error al actualizar los datos del usuario:", error);
     throw error;
   }
 }
@@ -138,7 +139,7 @@ async function deleteUserData(id) {
     await user.destroy();
     return { message: "Usuario eliminado con éxito." };
   } catch (error) {
-    console.error("Error al eliminar el usuario:", error);
+    logger.error("Error al eliminar el usuario:", error);
     throw error;
   }
 }
@@ -161,7 +162,7 @@ async function findUserByIdAndRole(id_usuario, rol) {
 
     return usuario; // Retorna el usuario encontrado
   } catch (error) {
-    console.error("Error al buscar el usuario por ID y rol:", error);
+    logger.error("Error al buscar el usuario por ID y rol:", error);
     throw error; // En caso de error, lanzamos la excepción
   }
 }
@@ -182,55 +183,9 @@ async function findUserById(id_usuario) {
 
     return usuario; // Retorna el usuario encontrado
   } catch (error) {
-    console.error("Error al buscar el usuario por ID:", error);
+    logger.error("Error al buscar el usuario por ID:", error);
     throw error; // En caso de error, lanzamos la excepción
   }
 }
 
-// Exportar tanto el modelo como las funciones
-const UserModel = sequelize.define(
-  "Usuario",
-  {
-    id_usuario: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-      allowNull: false,
-    },
-    nombre: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    apellido: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    correo_electronico: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-    },
-    contrasena: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    rol: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    tipo_usuario: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    estado: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true,
-    },
-  },
-  {
-    tableName: "usuario",
-    timestamps: false,
-  }
-);
-
-module.exports = UserModel;
+module.exports = User;

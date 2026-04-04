@@ -17,8 +17,8 @@ const {
   saveAgenda,
   getAgendaByMeeting,
 } = require("../controllers/adminController");
-const authMiddleware = require("../middlewares/authMiddleware");
-const roleMiddleware = require("../middlewares/roleMiddleware");
+const authMiddleware = require("../middleware/authMiddleware");
+const roleMiddleware = require("../middleware/roleMiddleware");
 
 const router = express.Router();
 
@@ -26,21 +26,28 @@ const router = express.Router();
 router.use(authMiddleware);
 router.use(roleMiddleware(['administrador']));
 
-router.get("/loadUsers", getUsers);
-router.get("/loadUserById", getUserById);
-router.put("/updateUser", updateUser);
-router.put("/updateTask", updateTask);
-router.delete("/deleteUser/:id", deleteUser);
-router.delete("/deleteTask/:id", deleteTask);
-router.post("/addTask", addTask);
-router.post("/addMeeting", addMeeting);
-router.get("/loadTasks", loadTasks);
-router.get("/loadTaskById", getTaskById);
-router.get("/loadMeetings", getMeetings);
-router.delete("/deleteMeeting/:id", deleteMeeting);
-router.get("/loadMeetingById", getMeetingById);
-router.put("/updateMeeting", updateMeeting);
-router.post("/saveAgenda/:id_reunion", saveAgenda);
-router.get("/agenda/:id_reunion", getAgendaByMeeting);
+// RESTful endpoints for users
+router.get("/users", getUsers);
+router.get("/users/:id", getUserById);
+router.put("/users/:id", updateUser);
+router.delete("/users/:id", deleteUser);
+
+// RESTful endpoints for tasks
+router.get("/tasks", loadTasks);
+router.get("/tasks/:id", getTaskById);
+router.post("/tasks", addTask);
+router.put("/tasks/:id", updateTask);
+router.delete("/tasks/:id", deleteTask);
+
+// RESTful endpoints for meetings
+router.get("/meetings", getMeetings);
+router.get("/meetings/:id", getMeetingById);
+router.post("/meetings", addMeeting);
+router.put("/meetings/:id", updateMeeting);
+router.delete("/meetings/:id", deleteMeeting);
+
+// RESTful endpoints for agenda
+router.get("/meetings/:id_reunion/agenda", getAgendaByMeeting);
+router.post("/meetings/:id_reunion/agenda", saveAgenda);
 
 module.exports = router;

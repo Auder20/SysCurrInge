@@ -2,6 +2,7 @@ require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const { DataTypes } = require('sequelize');
 const sequelize = require('./config/database');
+const logger = require('./config/logger');
 
 // ── Modelos ────────────────────────────────────────────────
 const Usuario = sequelize.define('Usuario', {
@@ -174,26 +175,26 @@ const agendasPorReunion = [
 async function seed() {
   try {
     await sequelize.authenticate();
-    console.log('✅ Conexión a la base de datos exitosa\n');
+    logger.log('✅ Conexión a la base de datos exitosa\n');
 
     await sequelize.sync({ alter: true });
-    console.log('✅ Tablas sincronizadas\n');
+    logger.log('✅ Tablas sincronizadas\n');
 
     // ── 1. USUARIOS ──────────────────────────────────────
-    console.log('👥 Insertando usuarios...');
+    logger.log('👥 Insertando usuarios...');
     const usuariosCreados = [];
 
     for (const u of usuariosData) {
       const existe = await Usuario.findOne({ where: { correo_electronico: u.correo_electronico } });
       if (existe) {
-        console.log(`   ⏭  Ya existe: ${u.correo_electronico}`);
+        logger.log(`   ⏭  Ya existe: ${u.correo_electronico}`);
         usuariosCreados.push(existe);
         continue;
       }
       const hash  = await bcrypt.hash(u.contrasena, 10);
       const nuevo = await Usuario.create({ ...u, contrasena: hash });
       usuariosCreados.push(nuevo);
-      console.log(`   ✔  Creado: ${u.correo_electronico} (${u.rol})`);
+      logger.log(`   ✔  Creado: ${u.correo_electronico} (${u.rol})`);
     }
 
     // Referencias por rol
@@ -204,7 +205,7 @@ async function seed() {
     const todos    = usuariosCreados;
 
     // ── 2. TAREAS ─────────────────────────────────────────
-    console.log('\n📋 Insertando tareas...');
+    logger.log('\n📋 Insertando tareas...');
     
     const responsables = [...coords, ...miembros, admin, jefe].filter(Boolean);
     const tareas = [
@@ -239,14 +240,14 @@ async function seed() {
       const existe = await Tarea.findOne({ where: { descripcion: t.descripcion } });
       if (!existe) {
         await Tarea.create(t);
-        console.log(`   ✔  Tarea: "${t.descripcion.substring(0, 55)}..." (${t.estado})`);
+        logger.log(`   ✔  Tarea: "${t.descripcion.substring(0, 55)}..." (${t.estado})`);
       } else {
-        console.log(`   ⏭  Ya existe: "${t.descripcion.substring(0, 55)}..."`);
+        logger.log(`   ⏭  Ya existe: "${t.descripcion.substring(0, 55)}..."`);
       }
     }
 
     // ── 3. REUNIONES ──────────────────────────────────────
-    console.log('\n📅 Insertando reuniones...');
+    logger.log('\n📅 Insertando reuniones...');
     let reunionesCreadas = [];
     
     const responsablesReunion = [admin, coords[0], coords[1], admin, coords[0], jefe, coords[1], coords[0], jefe, coords[1], admin, jefe];
@@ -258,15 +259,15 @@ async function seed() {
         const resp = responsablesReunion[i % responsablesReunion.length];
         const nueva = await Reunion.create({ ...r, id_usuario: resp?.id_usuario || null });
         reunionesCreadas.push(nueva);
-        console.log(`   ✔  Reunión: "${r.nombre_reunion}" (${r.fecha})`);
+        logger.log(`   ✔  Reunión: "${r.nombre_reunion}" (${r.fecha})`);
       } else {
         reunionesCreadas.push(existe);
-        console.log(`   ⏭  Ya existe: "${r.nombre_reunion}"`);
+        logger.log(`   ⏭  Ya existe: "${r.nombre_reunion}"`);
       }
     }
 
     // ── 4. AGENDAS ────────────────────────────────────────
-    console.log('\n📋 Insertando agendas...');
+    logger.log('\n📋 Insertando agendas...');
     let totalAgendaCreada = 0;
 
     for (let i = 0; i < reunionesCreadas.length; i++) {
@@ -276,7 +277,7 @@ async function seed() {
 
       const agendaExistente = await Agenda.count({ where: { id_reunion: reunion.id_reunion } });
       if (agendaExistente > 0) {
-        console.log(`   ⏭  Agenda ya existe para: "${reunion.nombre_reunion}"`);
+        logger.log(`   ⏭  Agenda ya existe para: "${reunion.nombre_reunion}"`);
         continue;
       }
 
@@ -284,7 +285,7 @@ async function seed() {
         await Agenda.create({ ...item, id_reunion: reunion.id_reunion });
         totalAgendaCreada++;
       }
-      console.log(`   ✔  ${items.length} items para: "${reunion.nombre_reunion}"`);
+      logger.log(`   ✔  ${items.length} items para: "${reunion.nombre_reunion}"`);
     }
 
     // ── Resumen ────────────────────────────────────────────
@@ -293,27 +294,27 @@ async function seed() {
     const totR = await Reunion.count();
     const totA = await Agenda.count();
 
-    console.log('\n' + '═'.repeat(60));
-    console.log('🎉  Semilla completada exitosamente');
-    console.log('═'.repeat(60));
-    console.log(`\n   👥 Usuarios:  ${totU}`);
-    console.log(`   📋 Tareas:    ${totT}`);
-    console.log(`   📅 Reuniones: ${totR}`);
-    console.log(`   🗒️  Agenda:    ${totA} items en ${reunionesCreadas.length} reuniones`);
-    console.log('\n📋 Credenciales de acceso:');
-    console.log('   admin@syscurringe.com          →  Admin123!      (administrador)');
-    console.log('   carlos.ruiz@syscurringe.com    →  Carlos123!     (coordinador/moderador)');
-    console.log('   coordinador@syscurringe.com    →  Coord123!      (coordinador/moderador)');
-    console.log('   asistente@syscurringe.com      →  Asist123!      (coordinador/asistente)');
-    console.log('   f.mendoza@syscurringe.com      →  Felipe123!     (jefe de departamento)');
-    console.log('   ana.lopez@syscurringe.com      →  Ana123!        (participante/miembro)');
-    console.log('   miembro@syscurringe.com        →  Miembro123!    (participante/miembro)');
-    console.log('   invitado@syscurringe.com       →  Invitado123!   (participante/invitado)');
-    console.log('');
+    logger.log('\n' + '═'.repeat(60));
+    logger.log('🎉  Semilla completada exitosamente');
+    logger.log('═'.repeat(60));
+    logger.log(`\n   👥 Usuarios:  ${totU}`);
+    logger.log(`   📋 Tareas:    ${totT}`);
+    logger.log(`   📅 Reuniones: ${totR}`);
+    logger.log(`   🗒️  Agenda:    ${totA} items en ${reunionesCreadas.length} reuniones`);
+    logger.log('\n📋 Credenciales de acceso:');
+    logger.log('   admin@syscurringe.com          →  Admin123!      (administrador)');
+    logger.log('   carlos.ruiz@syscurringe.com    →  Carlos123!     (coordinador/moderador)');
+    logger.log('   coordinador@syscurringe.com    →  Coord123!      (coordinador/moderador)');
+    logger.log('   asistente@syscurringe.com      →  Asist123!      (coordinador/asistente)');
+    logger.log('   f.mendoza@syscurringe.com      →  Felipe123!     (jefe de departamento)');
+    logger.log('   ana.lopez@syscurringe.com      →  Ana123!        (participante/miembro)');
+    logger.log('   miembro@syscurringe.com        →  Miembro123!    (participante/miembro)');
+    logger.log('   invitado@syscurringe.com       →  Invitado123!   (participante/invitado)');
+    logger.log('');
 
   } catch (error) {
-    console.error('❌ Error durante la semilla:', error.message);
-    if (error.original) console.error('   DB error:', error.original.message);
+    logger.error('❌ Error durante la semilla:', error.message);
+    if (error.original) logger.error('   DB error:', error.original.message);
     if (require.main === module) {
       await sequelize.close();
       process.exit(1);

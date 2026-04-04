@@ -1,5 +1,6 @@
 const { Sequelize } = require("sequelize");
 require("dotenv").config();
+const logger = require("./logger");
 
 const sequelize = new Sequelize(
   process.env.DB_NAME,
@@ -15,7 +16,7 @@ const sequelize = new Sequelize(
       idle: 10000, // tiempo máximo que una conexión puede estar inactiva (10 segundos)
       evict: 1000 // verificar conexiones cada 1 segundo
     },
-    logging: process.env.NODE_ENV === 'development' ? console.log : false,
+    logging: process.env.NODE_ENV === 'development' ? logger.info.bind(logger) : false,
     dialectOptions: {
       charset: 'utf8mb4',
       collate: 'utf8mb4_unicode_ci'
@@ -42,9 +43,9 @@ const checkDatabaseHealth = async () => {
 const closeDatabase = async () => {
   try {
     await sequelize.close();
-    console.log('Database connection closed successfully');
+    logger.info('Database connection closed successfully');
   } catch (error) {
-    console.error('Error closing database connection:', error);
+    logger.error('Error closing database connection:', error);
   }
 };
 

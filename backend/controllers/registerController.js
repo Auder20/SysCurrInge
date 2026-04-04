@@ -6,6 +6,7 @@ const {
 } = require("../services/emailService");
 const { createNewUser, existsAdminUser, findByEmail } = require("../models/UserFunctions");
 const VerificationCode = require("../models/VerificationCode");
+const logger = require("../config/logger");
 
 const validateAdminRole = async (req, res) => {
   try {
@@ -14,7 +15,7 @@ const validateAdminRole = async (req, res) => {
     // Devuelve true si existe un administrador, y false si no existe
     return res.status(200).json(adminExists); // `adminExists` será `true` o `false`
   } catch (error) {
-    console.error("Error al verificar administrador:", error);
+    logger.error("Error al verificar administrador:", error);
     return res
       .status(500)
       .json({ error: "Error al verificar administrador. Inténtalo de nuevo." });
@@ -50,7 +51,7 @@ const generateCode = async (req, res) => {
       .status(200)
       .json({ message: "Código de verificación enviado al correo." });
   } catch (error) {
-    console.error("Error al enviar el código de verificación:", error);
+    logger.error("Error al enviar código de verificación:", error);
     res.status(500).json({
       error: "No se pudo enviar el código de verificación. Intenta de nuevo.",
     });
@@ -102,7 +103,7 @@ const verifyCode = async (req, res) => {
       message: "Código de verificación correcto.",
     });
   } catch (error) {
-    console.error("Error al verificar el código:", error);
+    logger.error("Error al verificar el código:", error);
     return res.status(500).json({
       error: "Hubo un error al verificar el código. Intenta de nuevo.",
     });
@@ -152,7 +153,7 @@ const register = async (req, res) => {
 
     return res.status(201).json({ message: "Registro exitoso. Redirigiendo..." });
   } catch (error) {
-    console.error("Error al registrar el usuario:", error);
+    logger.error("Error al registrar usuario:", error);
     return res.status(500).json({ error: "Hubo un error al registrar al usuario. Inténtalo de nuevo." });
   }
 };

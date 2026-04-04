@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const logger = require("../config/logger");
 
 module.exports = (req, res, next) => {
   const authHeader = req.header("Authorization");
@@ -19,7 +20,7 @@ module.exports = (req, res, next) => {
     req.user = verified; // Almacena la información del usuario en la solicitud
     next(); // Pasa al siguiente middleware o controlador
   } catch (error) {
-    console.error("Token inválido:", error);
+    logger.error("Token inválido:", error);
     return res.status(401).json({ error: "Token inválido o expirado" }); // Código 401 para no autorizado
   }
 };

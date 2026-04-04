@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
+const logger = require("../config/logger");
 
 // Modelo de Agenda
 const Agenda = sequelize.define(
@@ -49,7 +50,7 @@ async function createAgendaItem(agendaData) {
     const agendaItem = await Agenda.create(agendaData);
     return agendaItem;
   } catch (error) {
-    console.error("Error al crear item de agenda:", error);
+    logger.error("Error al crear agenda:", error);
     throw error;
   }
 }
@@ -63,7 +64,7 @@ async function getAgendaByMeetingId(id_reunion) {
     });
     return agendaItems;
   } catch (error) {
-    console.error("Error al obtener agenda por reunión:", error);
+    logger.error("Error al obtener agendas por reunión:", error);
     throw error;
   }
 }
@@ -76,7 +77,7 @@ async function saveAgendaItems(agendaItems) {
     });
     return results;
   } catch (error) {
-    console.error("Error al guardar items de agenda:", error);
+    logger.error("Error al guardar items de agenda:", error);
     throw error;
   }
 }
@@ -89,7 +90,7 @@ async function deleteAgendaByMeetingId(id_reunion) {
     });
     return deletedCount;
   } catch (error) {
-    console.error("Error al eliminar agenda por reunión:", error);
+    logger.error("Error al eliminar agenda por reunión:", error);
     throw error;
   }
 }
@@ -104,7 +105,7 @@ async function updateAgendaItem(id_agenda, agendaData) {
     await agendaItem.update(agendaData);
     return agendaItem;
   } catch (error) {
-    console.error("Error al actualizar item de agenda:", error);
+    logger.error("Error al actualizar agenda:", error);
     throw error;
   }
 }
@@ -119,7 +120,7 @@ async function deleteAgendaItem(id_agenda) {
     await agendaItem.destroy();
     return { message: "Item de agenda eliminado con éxito." };
   } catch (error) {
-    console.error("Error al eliminar item de agenda:", error);
+    logger.error("Error al eliminar item de agenda:", error);
     throw error;
   }
 }

@@ -1,7 +1,14 @@
 import axios from "axios";
 
+const getBaseURL = () => {
+  const isDevelopment = process.env.NODE_ENV === 'development' || !process.env.NODE_ENV;
+  return isDevelopment 
+    ? "http://localhost:5001/api"
+    : "https://syscurringe.onrender.com/api";
+};
+
 const api = axios.create({
-  baseURL: "https://syscurringe.onrender.com/api",
+  baseURL: getBaseURL(),
 });
 
 // Interceptor para incluir automáticamente el token en cada petición

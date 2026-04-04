@@ -19,7 +19,7 @@ const coordinatorRoute = require("./routes/coordinatorRoute");
 const requiredEnvVars = ['JWT_SECRET', 'DATABASE_URL'];
 const missingVars = requiredEnvVars.filter(v => !process.env[v]);
 if (missingVars.length > 0) {
-  console.error(`❌ Variables de entorno faltantes: ${missingVars.join(', ')}`);
+  logger.error(`❌ Variables de entorno faltantes: ${missingVars.join(', ')}`);
   process.exit(1);
 }
 
@@ -37,8 +37,21 @@ app.use(slowRequestDetector(1000)); // Alertar si una petición toma más de 1 s
 
 // Security middleware
 app.use(helmet({
-  contentSecurityPolicy: false, // Desactiva CSP — el frontend React maneja su propio CSP
-  crossOriginEmbedderPolicy: false, // Necesario si usas imágenes o recursos externos
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      imgSrc: ["'self'", "data:", "https:"],
+      scriptSrc: ["'self'"],
+      connectSrc: ["'self'", "https://syscurringe.onrender.com", "http://localhost:5001"],
+      frameSrc: ["'none'"],
+      objectSrc: ["'none'"],
+      mediaSrc: ["'self'"],
+      manifestSrc: ["'self'"]
+    },
+  },
+  crossOriginEmbedderPolicy: false,
 }));
 
 // Compression middleware
@@ -65,9 +78,17 @@ const verifyLimiter = rateLimit({
   message: { error: 'Demasiados intentos de verificación. Solicita un nuevo código.' },
 });
 
-// Configuración de CORS (temporalmente permisivo para debug)
+// Configuración de CORS basado en entorno
+const corsOrigins = {
+  development: ['http://localhost:3000', 'http://localhost:3001'],
+  production: ['https://syscurringe.onrender.com', 'https://syscurringe.vercel.app'],
+  test: []
+};
+
+const allowedOrigins = corsOrigins[process.env.NODE_ENV] || corsOrigins.development;
+
 app.use(cors({
-  origin: true, // Permitir todos los orígenes temporalmente
+  origin: allowedOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
@@ -81,10 +102,13 @@ app.use('/api/auth/login', loginLimiter);
 app.use('/api/register/send-verification-code', codeLimiter);
 app.use('/api/register/verify-code', verifyLimiter);
 
+const authMiddleware = require('./middleware/authMiddleware');
+const roleMiddleware = require('./middleware/roleMiddleware');
+
 // Rutas de health checks
 app.get('/health', healthCheck);
 app.get('/ready', readinessCheck);
-app.get('/debug', async (req, res) => {
+app.get('/debug', authMiddleware, roleMiddleware(['administrador']), async (req, res) => {
   try {
     // Importar modelos y verificar conexión
     const sequelize = require('./config/database');

@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { findByEmail, findUserById } = require("../models/UserFunctions");
+const logger = require("../config/logger");
 
 async function login(req, res) {
   const { email, password } = req.body;
@@ -41,7 +42,7 @@ async function login(req, res) {
       user: safeUser,
     });
   } catch (error) {
-    console.error("Error al iniciar sesión:", error);
+    logger.error("Error al iniciar sesión:", error);
     res.status(500).json({ error: "Error interno del servidor" });
   }
 }
@@ -63,7 +64,7 @@ async function getMe(req, res) {
       message: "Información de usuario obtenida correctamente"
     });
   } catch (error) {
-    console.error("Error al obtener información del usuario:", error);
+    logger.error("Error al obtener información del usuario:", error);
     res.status(500).json({ error: "Error interno del servidor" });
   }
 }

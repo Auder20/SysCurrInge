@@ -1,5 +1,6 @@
 const UserModel = require('./User');
 const bcrypt = require('bcryptjs');
+const logger = require('../config/logger');
 
 // Función para buscar un usuario por email
 const findByEmail = async (email) => {
@@ -7,7 +8,7 @@ const findByEmail = async (email) => {
     const user = await UserModel.findOne({ where: { correo_electronico: email } });
     return user;
   } catch (error) {
-    console.error("Error al buscar usuario por email:", error);
+    logger.error("Error al buscar usuario por email:", error);
     throw error;
   }
 };
@@ -18,7 +19,7 @@ const createNewUser = async (userData) => {
     const newUser = await UserModel.create(userData);
     return newUser;
   } catch (error) {
-    console.error("Error al crear usuario:", error);
+    logger.error("Error al crear usuario:", error);
     throw error;
   }
 };
@@ -29,7 +30,7 @@ const existsAdminUser = async () => {
     const adminUser = await UserModel.findOne({ where: { rol: 'administrador' } });
     return adminUser !== null;
   } catch (error) {
-    console.error("Error al verificar administrador:", error);
+    logger.error("Error al verificar si existe admin:", error);
     throw error;
   }
 };
@@ -40,7 +41,7 @@ const getAllUsers = async () => {
     const users = await UserModel.findAll();
     return users;
   } catch (error) {
-    console.error("Error al obtener usuarios:", error);
+    logger.error("Error al obtener usuarios:", error);
     throw error;
   }
 };
@@ -51,7 +52,7 @@ const getUserbyid = async (id) => {
     const user = await UserModel.findByPk(id);
     return user;
   } catch (error) {
-    console.error("Error al obtener usuario por ID:", error);
+    logger.error("Error al obtener usuario por ID:", error);
     throw error;
   }
 };
@@ -62,7 +63,7 @@ const updateUserData = async (id, userData) => {
     const updatedUser = await UserModel.update(userData, { where: { id_usuario: id } });
     return updatedUser;
   } catch (error) {
-    console.error("Error al actualizar usuario:", error);
+    logger.error("Error al actualizar usuario:", error);
     throw error;
   }
 };
@@ -73,7 +74,7 @@ const deleteUserData = async (id) => {
     const deletedUser = await UserModel.destroy({ where: { id_usuario: id } });
     return deletedUser;
   } catch (error) {
-    console.error("Error al eliminar usuario:", error);
+    logger.error("Error al eliminar usuario:", error);
     throw error;
   }
 };
@@ -84,7 +85,7 @@ const findUserByIdAndRole = async (id, role) => {
     const user = await UserModel.findOne({ where: { id_usuario: id, rol: role } });
     return user;
   } catch (error) {
-    console.error("Error al buscar usuario por ID y rol:", error);
+    logger.error("Error al buscar usuario por ID y rol:", error);
     throw error;
   }
 };

@@ -2,13 +2,16 @@ const User = require("../models/User");
 const Task = require("../models/Task");
 const Meeting = require("../models/Meeting");
 const Agenda = require("../models/Agenda");
+const logger = require("../config/logger");
 
 const getUsers = async (req, res) => {
   try {
-    const users = await User.findAll();
+    const users = await User.findAll({
+      attributes: { exclude: ['contrasena'] }
+    });
     res.json(users);
   } catch (error) {
-    console.error("Error al obtener los usuarios", error);
+    logger.error("Error al obtener los usuarios", error);
     res.status(500).json({ error: "Error al obtener usuarios" });
   }
 };
@@ -18,27 +21,29 @@ const loadTasks = async (req, res) => {
     const tasks = await Task.findAll();
     res.json(tasks);
   } catch (error) {
-    console.error("Error al cargar tareas", error);
+    logger.error("Error al cargar tareas", error);
     res.status(500).json({ error: "Error al cargar tareas" });
   }
 };
 
 const getUserById = async (req, res) => {
-  const { id } = req.query;
+  const { id } = req.params;
   try {
-    const user = await User.findByPk(id);
+    const user = await User.findByPk(id, {
+      attributes: { exclude: ['contrasena'] }
+    });
     if (!user) {
       return res.status(404).json({ error: "Usuario no encontrado" });
     }
     res.json(user);
   } catch (error) {
-    console.error("Error al obtener el usuario", error);
+    logger.error("Error al obtener el usuario", error);
     res.status(500).json({ error: "Error al obtener usuario" });
   }
 };
 
 const getTaskById = async (req, res) => {
-  const { id } = req.query;
+  const { id } = req.params;
   try {
     const task = await Task.findByPk(id);
     if (!task) {
@@ -46,13 +51,13 @@ const getTaskById = async (req, res) => {
     }
     res.json(task);
   } catch (error) {
-    console.error("Error al obtener la tarea", error);
+    logger.error("Error al obtener la tarea", error);
     res.status(500).json({ error: "Error al obtener la tarea" });
   }
 };
 
 const updateUser = async (req, res) => {
-  const { id } = req.query;
+  const { id } = req.params;
   const { nombre, apellido, correo_electronico, estado, rol } = req.body;
 
   const rolesPermitidos = ['administrador', 'coordinador', 'participante'];
@@ -76,13 +81,13 @@ const updateUser = async (req, res) => {
 
     res.json({ message: "Usuario actualizado correctamente", user });
   } catch (error) {
-    console.error("Error al actualizar el usuario:", error);
+    logger.error("Error al actualizar el usuario:", error);
     res.status(500).json({ error: "Error al actualizar usuario" });
   }
 };
 
 const updateTask = async (req, res) => {
-  const { id } = req.query;
+  const { id } = req.params;
   const { descripcion, fecha_vencimiento, estado, id_usuario } = req.body;
 
   try {
@@ -100,7 +105,7 @@ const updateTask = async (req, res) => {
 
     res.json({ message: "Tarea actualizada correctamente", task });
   } catch (error) {
-    console.error("Error al actualizar la Tarea:", error);
+    logger.error("Error al actualizar la Tarea:", error);
     res.status(500).json({ error: "Error al actualizar la Tarea" });
   }
 };
@@ -125,7 +130,7 @@ const deleteUser = async (req, res) => {
     await userToDelete.destroy();
     return res.json({ message: "Usuario eliminado correctamente" });
   } catch (error) {
-    console.error("Error al eliminar el usuario:", error);
+    logger.error("Error al eliminar el usuario:", error);
     return res.status(500).json({ message: "Error interno al eliminar el usuario." });
   }
 };
@@ -142,7 +147,7 @@ const deleteTask = async (req, res) => {
     await task.destroy();
     return res.json({ message: "Tarea eliminada correctamente" });
   } catch (error) {
-    console.error("Error al eliminar la Tarea:", error);
+    logger.error("Error al eliminar la Tarea:", error);
     return res
       .status(500)
       .json({ message: "Error interno al eliminar la tarea." });
@@ -181,7 +186,7 @@ const addTask = async (req, res) => {
       .status(201)
       .json({ message: "Tarea creada exitosamente", task: result });
   } catch (error) {
-    console.error("Error al agregar la tarea:", error);
+    logger.error("Error al agregar la tarea:", error);
     return res
       .status(500)
       .json({ message: "Error interno al agregar la tarea." });
@@ -210,7 +215,7 @@ const addMeeting = async (req, res) => {
       .status(201)
       .json({ message: "Reunión creada exitosamente", meeting: result });
   } catch (error) {
-    console.error("Error al agregar la reunión:", error);
+    logger.error("Error al agregar la reunión:", error);
     return res
       .status(500)
       .json({ message: "Error interno al agregar la reunión." });
@@ -222,7 +227,7 @@ const getMeetings = async (req, res) => {
     const meetings = await Meeting.findAll();
     res.json(meetings);
   } catch (error) {
-    console.error("Error al obtener reuniones", error);
+    logger.error("Error al obtener reuniones", error);
     res.status(500).json({ error: "Error al obtener reuniones" });
   }
 };
@@ -239,7 +244,7 @@ const deleteMeeting = async (req, res) => {
     await meeting.destroy();
     return res.json({ message: "Reunión eliminada correctamente" });
   } catch (error) {
-    console.error("Error al eliminar la reunión:", error);
+    logger.error("Error al eliminar la reunión:", error);
     return res
       .status(500)
       .json({ message: "Error interno al eliminar la reunión." });
@@ -247,7 +252,7 @@ const deleteMeeting = async (req, res) => {
 };
 
 const getMeetingById = async (req, res) => {
-  const { id } = req.query;
+  const { id } = req.params;
   try {
     const meeting = await Meeting.findByPk(id);
     if (!meeting) {
@@ -255,13 +260,13 @@ const getMeetingById = async (req, res) => {
     }
     res.json(meeting);
   } catch (error) {
-    console.error("Error al obtener la reunión", error);
+    logger.error("Error al obtener la reunión", error);
     res.status(500).json({ error: "Error al obtener la reunión" });
   }
 };
 
 const updateMeeting = async (req, res) => {
-  const { id } = req.query;
+  const { id } = req.params;
   const { nombre_reunion, fecha, ubicacion, id_usuario } = req.body;
 
   try {
@@ -279,7 +284,7 @@ const updateMeeting = async (req, res) => {
 
     res.json({ message: "Reunión actualizada correctamente", meeting });
   } catch (error) {
-    console.error("Error al actualizar la reunión:", error);
+    logger.error("Error al actualizar la reunión:", error);
     res.status(500).json({ error: "Error al actualizar la reunión" });
   }
 };
@@ -294,11 +299,23 @@ const saveAgenda = async (req, res) => {
       return res.status(404).json({ error: "Reunión no encontrada" });
     }
 
-    // Aquí podrías guardar los ítems de agenda en una tabla separada
-    // Por ahora, solo devolvemos éxito
-    res.json({ message: "Agenda guardada correctamente", agendaItems });
+    // Eliminar agenda existente para esta reunión
+    await Agenda.destroy({ where: { id_reunion } });
+
+    // Guardar nuevos items de agenda
+    const savedItems = await Agenda.bulkCreate(
+      agendaItems.map(item => ({
+        ...item,
+        id_reunion
+      }))
+    );
+
+    res.json({ 
+      message: "Agenda guardada correctamente", 
+      agendaItems: savedItems 
+    });
   } catch (error) {
-    console.error("Error al guardar la agenda:", error);
+    logger.error("Error al guardar la agenda:", error);
     res.status(500).json({ error: "Error al guardar la agenda" });
   }
 };
@@ -312,11 +329,15 @@ const getAgendaByMeeting = async (req, res) => {
       return res.status(404).json({ error: "Reunión no encontrada" });
     }
 
-    // Aquí podrías obtener los ítems de agenda de una tabla separada
-    // Por ahora, solo devolvemos la información de la reunión
-    res.json({ meeting, agendaItems: [] });
+    // Obtener items de agenda de la base de datos
+    const agendaItems = await Agenda.findAll({
+      where: { id_reunion },
+      order: [['id_agenda', 'ASC']]
+    });
+
+    res.json({ meeting, agendaItems });
   } catch (error) {
-    console.error("Error al obtener la agenda:", error);
+    logger.error("Error al obtener la agenda:", error);
     res.status(500).json({ error: "Error al obtener la agenda" });
   }
 };
