@@ -1,5 +1,5 @@
 const express = require("express");
-const authMiddleware = require("../middlewares/authMiddleware");
+const authMiddleware = require("../middleware/authMiddleware");
 const {
   loadTasks,
   addTask,
@@ -14,7 +14,7 @@ const {
 const {
   getUsers,
 } = require("../controllers/adminController");
-const roleMiddleware = require("../middlewares/roleMiddleware");
+const roleMiddleware = require("../middleware/roleMiddleware");
 
 const router = express.Router();
 

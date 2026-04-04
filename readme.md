@@ -45,7 +45,7 @@ El sistema permite administrar el ciclo completo de una reunión de comité curr
 ├── backend/
 │   ├── config/          # Configuración de la base de datos (Sequelize)
 │   ├── controllers/     # Lógica de negocio (auth, admin, registro)
-│   ├── middlewares/     # Middleware de autenticación JWT
+│   ├── middleware/      # Middleware de autenticación JWT
 │   ├── models/          # Modelos Sequelize (Usuario, Tarea, Reunión)
 │   ├── routes/          # Definición de rutas REST
 │   ├── services/        # Servicio de correo electrónico
